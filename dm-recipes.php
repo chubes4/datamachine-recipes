@@ -25,7 +25,6 @@ define( 'DM_RECIPES_PLUGIN_FILE', __FILE__ );
 define( 'DM_RECIPES_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DM_RECIPES_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-// PSR-4 autoloader for DM_Recipes namespace
 spl_autoload_register( function( $class_name ) {
     if ( strpos( $class_name, 'DM_Recipes\\' ) !== 0 ) {
         return;
@@ -42,10 +41,10 @@ spl_autoload_register( function( $class_name ) {
 
 /**
  * Initialize DM-Recipes plugin functionality.
- * 
+ *
  * Loads translation textdomain, registers Data Machine handler filters,
  * and initializes Recipe Schema Gutenberg block. Called on WordPress 'init' hook.
- * 
+ *
  * @since 1.0.0
  */
 function dm_recipes_init() {
@@ -53,17 +52,16 @@ function dm_recipes_init() {
     require_once DM_RECIPES_PLUGIN_DIR . 'inc/handlers/WordPressRecipePublish/WordPressRecipePublishFilters.php';
     require_once DM_RECIPES_PLUGIN_DIR . 'inc/blocks/recipe-schema/recipe-schema.php';
     
-    // Initialize Recipe Schema Gutenberg block
     dm_recipes_register_recipe_schema_block();
 }
 
 /**
  * Plugin activation callback.
- * 
+ *
  * Validates Data Machine plugin dependency is active before allowing activation.
  * Deactivates self and displays error if dependency not met. Flushes rewrite
  * rules to ensure proper URL structure.
- * 
+ *
  * @since 1.0.0
  */
 function dm_recipes_activate() {
@@ -80,10 +78,10 @@ function dm_recipes_activate() {
 
 /**
  * Plugin deactivation callback.
- * 
+ *
  * Performs cleanup operations including flushing rewrite rules
  * to remove any custom URL structures.
- * 
+ *
  * @since 1.0.0
  */
 function dm_recipes_deactivate() {

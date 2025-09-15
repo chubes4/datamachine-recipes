@@ -70,31 +70,33 @@ This document outlines the Schema.org Recipe properties implemented in the DM-Re
 
 The block automatically generates complete Schema.org Recipe structured data including:
 
-- Basic recipe information (name, description, images)
-- Timing information in ISO 8601 format
-- Ingredients and instructions with proper HowToStep markup
-- Author information from WordPress post author
-- Aggregate rating data (if available from post meta)
-- Nutritional information
-- Video content with VideoObject markup
-- All additional properties as structured data
+- **Basic Recipe Information**: Name, description, images with proper @context and @type
+- **ISO 8601 Timing**: Preparation time, cooking time, and total time in ISO 8601 duration format
+- **HowToStep Instructions**: Recipe instructions with proper HowToStep markup and sequential naming
+- **Person Author**: Author information from WordPress post author with name and URL
+- **AggregateRating Integration**: Rating data from WordPress post meta (when available and valid)
+- **NutritionInformation**: Comprehensive nutritional data with proper Schema.org NutritionInformation type
+- **VideoObject Support**: Video content with proper VideoObject markup including contentUrl, thumbnailUrl, and duration
+- **Additional Properties**: All recipe properties including cuisine, category, cooking method, dietary restrictions, tools, and supplies
 
 ## Microdata HTML Output
 
-The block renders semantic HTML with microdata attributes:
-- `itemscope itemtype="https://schema.org/Recipe"`
-- Individual `itemprop` attributes for all properties
-- HowToStep markup for instructions
-- Person markup for author information
-- AggregateRating markup for ratings
+The block renders hidden semantic HTML with comprehensive microdata attributes:
+- **Recipe Wrapper**: `itemscope itemtype="https://schema.org/Recipe"` on main container
+- **Meta Elements**: Individual `<meta itemprop>` elements for all recipe properties
+- **HowToStep Structure**: Nested `itemscope itemtype="https://schema.org/HowToStep"` for instructions
+- **Person Markup**: Author information with `itemscope itemtype="https://schema.org/Person"`
+- **AggregateRating Integration**: Rating markup with `itemscope itemtype="https://schema.org/AggregateRating"`
+- **Hidden Implementation**: All microdata elements are hidden from frontend display but accessible to search engines
 
 ## Integration with WordPress
 
 ### Post Meta Integration
-- Automatically includes `rating_value` and `review_count` post meta for aggregate ratings
-- Uses WordPress post author data for Schema.org author markup with name and URL
-- Falls back to post publication date for `datePublished` if not provided
-- Integrates with WordPress user system for author information
+- **Aggregate Rating System**: Automatically includes `rating_value` and `review_count` post meta for Schema.org AggregateRating markup
+- **Author Integration**: Uses WordPress post author data for Schema.org Person markup with name and URL
+- **Publication Date Handling**: Falls back to post publication date for `datePublished` if not provided
+- **WordPress User System**: Integrates with WordPress user system for author information with proper URL linking
+- **Rating Validation**: Only includes aggregate ratings when review_count > 0 and rating_value is between 1-5
 
 ### Duration Formatting
 - Converts ISO 8601 duration format (PT30M) to human-readable format (30 minutes)
@@ -103,9 +105,11 @@ The block renders semantic HTML with microdata attributes:
 - Function: `dm_recipes_format_duration()` handles ISO 8601 parsing and formatting
 
 ### Block Registration
-- Registered via `dm_recipes_register_recipe_schema_block()` on WordPress `init` hook
-- Server-side rendering callback: `dm_recipes_render_recipe_schema_block()`
-- JSON-LD generation: `dm_recipes_generate_recipe_jsonld()` for structured data output
+- **Registration Function**: `dm_recipes_register_recipe_schema_block()` registers block on WordPress `init` hook
+- **Server-side Rendering**: `dm_recipes_render_recipe_schema_block()` handles both microdata and JSON-LD output
+- **JSON-LD Generation**: `dm_recipes_generate_recipe_jsonld()` creates complete Schema.org Recipe structured data
+- **Hidden Output**: Block content is hidden from frontend display (style="display: none;") as it only provides structured data
+- **Build Integration**: Uses compiled block definition from `/build/recipe-schema/` directory
 
 ## Text Domain Consistency
 All user-facing strings use the `dm-recipes` text domain for proper internationalization support.

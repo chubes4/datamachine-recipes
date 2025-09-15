@@ -1,10 +1,10 @@
 /**
  * Recipe Schema Block - Gutenberg Editor Interface
- * 
+ *
  * React-based Gutenberg block editor providing comprehensive Schema.org Recipe data input.
  * Features specialized components for duration input, array management, and tag handling.
  * Generates structured data attributes for server-side Schema.org markup rendering.
- * 
+ *
  * @package DM_Recipes
  * @since 1.0.0
  */
@@ -26,11 +26,11 @@ import { __ } from '@wordpress/i18n';
 
 /**
  * Duration Input Component
- * 
+ *
  * Specialized input component for ISO 8601 duration fields (prepTime, cookTime, totalTime).
  * Provides separate hour/minute inputs and automatically converts to ISO 8601 format.
  * Parses existing duration values on mount for editing existing recipes.
- * 
+ *
  * @param {string}   label    Field label for display
  * @param {string}   value    Current ISO 8601 duration value (e.g., "PT30M")
  * @param {Function} onChange Callback when duration value changes
@@ -39,7 +39,6 @@ const DurationInput = ({ label, value, onChange }) => {
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
     
-    // Parse existing ISO 8601 duration on component mount
     useEffect(() => {
         if (value && value.startsWith('PT')) {
             const duration = value.substring(2);
@@ -51,7 +50,6 @@ const DurationInput = ({ label, value, onChange }) => {
         }
     }, []);
     
-    // Update parent when hours/minutes change
     useEffect(() => {
         let newValue = 'PT';
         if (hours > 0) newValue += hours + 'H';
@@ -85,11 +83,11 @@ const DurationInput = ({ label, value, onChange }) => {
 
 /**
  * Array Input Component
- * 
+ *
  * Dynamic array input component for managing lists of strings (ingredients, instructions).
  * Provides add/remove functionality with textarea inputs for multi-line content.
  * Maintains array state and provides callbacks for parent component updates.
- * 
+ *
  * @param {string}   label       Field label for display
  * @param {Array}    items       Current array of string values
  * @param {Function} onChange    Callback when array values change
@@ -141,11 +139,11 @@ const ArrayInput = ({ label, items, onChange, placeholder }) => (
 
 /**
  * Tag Input Component
- * 
+ *
  * Tag management component for arrays of short strings (categories, keywords, diet types).
  * Provides visual tag display with removal buttons and text input for adding new tags.
  * Prevents duplicate entries and handles keyboard interaction (Enter to add).
- * 
+ *
  * @param {string}   label    Field label for display
  * @param {Array}    tags     Current array of tag strings
  * @param {Function} onChange Callback when tag array changes
@@ -213,7 +211,7 @@ const TagInput = ({ label, tags, onChange }) => {
 
 /**
  * Register Recipe Schema Block
- * 
+ *
  * Main block registration with comprehensive edit interface for Schema.org Recipe data.
  * Provides organized field groups (Basic Info, Timing, Categories, Nutrition, etc.)
  * and uses server-side rendering for Schema.org markup generation.
@@ -250,7 +248,6 @@ registerBlockType('dm-recipes/recipe-schema', {
 
         const blockProps = useBlockProps();
         
-        // Predefined cuisine type options for recipe classification
         const cuisineOptions = [
             { label: __('Select Cuisine', 'dm-recipes'), value: '' },
             { label: __('American', 'dm-recipes'), value: 'American' },
@@ -267,7 +264,6 @@ registerBlockType('dm-recipes/recipe-schema', {
         
         return (
             <div {...blockProps}>
-                {/* Block information header with usage explanation */}
                 <div style={{ 
                     background: '#f8f9fa', 
                     border: '1px solid #e0e0e0', 
@@ -283,7 +279,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                     </p>
                 </div>
 
-                {/* Basic recipe information fields */}
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
                         {__('Basic Information', 'dm-recipes')}
@@ -349,7 +344,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                     </div>
                 </div>
 
-                {/* Recipe timing fields with duration components */}
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
                         {__('Timing', 'dm-recipes')}
@@ -383,7 +377,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                     </div>
                 </div>
 
-                {/* Recipe classification and cuisine selection */}
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
                         {__('Categories & Cuisine', 'dm-recipes')}
@@ -414,7 +407,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                     </div>
                 </div>
 
-                {/* Dynamic ingredient list management */}
                 <div style={{ marginBottom: '24px' }}>
                     <ArrayInput
                         label={__('Recipe Ingredients', 'dm-recipes')}
@@ -424,7 +416,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                     />
                 </div>
 
-                {/* Step-by-step cooking instructions */}
                 <div style={{ marginBottom: '24px' }}>
                     <ArrayInput
                         label={__('Recipe Instructions', 'dm-recipes')}
@@ -434,7 +425,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                     />
                 </div>
 
-                {/* Optional nutrition data fields */}
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
                         {__('Nutrition Information (Optional)', 'dm-recipes')}
@@ -478,7 +468,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                     </div>
                 </div>
 
-                {/* Extended recipe metadata and equipment */}
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
                         {__('Additional Information (Optional)', 'dm-recipes')}

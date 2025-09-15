@@ -7,17 +7,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Register WordPress Recipe Publish handler with Data Machine filter system.
- * 
+ *
  * Registers handler discovery, AI tool generation, settings configuration, and
  * handler directives with Data Machine's filter-based architecture. Enables
  * dynamic AI tool generation based on taxonomy configuration and provides
  * comprehensive recipe publishing capabilities.
- * 
+ *
  * @since 1.0.0
  */
 function dm_recipes_register_wordpress_recipe_publish_filters() {
     
-    // Register handler for Data Machine discovery
     add_filter( 'dm_handlers', function( $handlers ) {
         $handlers['wordpress_recipe_publish'] = [
             'type' => 'publish',
@@ -28,7 +27,6 @@ function dm_recipes_register_wordpress_recipe_publish_filters() {
         return $handlers;
     } );
 
-    // Register dynamic AI tool with taxonomy-based parameter generation
     add_filter( 'ai_tools', function( $tools, $handler_slug = null, $handler_config = [] ) {
         if ( $handler_slug === 'wordpress_recipe_publish' ) {
             // Extract config using Data Machine pattern (handles nested structure)
@@ -42,19 +40,16 @@ function dm_recipes_register_wordpress_recipe_publish_filters() {
         return $tools;
     }, 10, 3 );
     
-    // Register settings configuration class
     add_filter( 'dm_handler_settings', function( $all_settings ) {
         $all_settings['wordpress_recipe_publish'] = new WordPressRecipePublishSettings();
         return $all_settings;
     } );
 
-    // Register AI agent directives for recipe content generation
     add_filter( 'dm_handler_directives', function( $directives ) {
         $directives['wordpress_recipe_publish'] = 'When publishing recipes to WordPress, create comprehensive recipe content with proper Schema.org structured data. Focus on clear, detailed ingredients with specific measurements, step-by-step instructions, accurate timing information (prep/cook/total), and helpful cooking tips. Include recipe categories, cuisine types, and dietary information when relevant. Ensure all recipe data follows Schema.org Recipe markup standards for optimal SEO and rich snippets. Use descriptive language that helps readers understand the cooking process and expected results.';
         return $directives;
     } );
 
-    // Recipe-specific success message formatting
     add_filter('dm_tool_success_message', function($default_message, $tool_name, $tool_result, $tool_parameters) {
         if ($tool_name === 'wordpress_recipe_publish') {
             $data = $tool_result['data'] ?? [];
@@ -79,11 +74,10 @@ function dm_recipes_register_wordpress_recipe_publish_filters() {
  * Generate dynamic recipe tool based on taxonomy configuration.
  * Follows Data Machine pattern for dynamic tool generation.
  *
- * @param array $recipe_config Recipe handler configuration.
- * @return array Dynamic tool configuration.
+ * @param array $recipe_config Recipe handler configuration
+ * @return array Dynamic tool configuration with wordpress_recipe_publish tool definition
  */
 function dm_recipes_get_dynamic_recipe_tool(array $recipe_config): array {
-    // Base recipe tool
     $tool = [
         'class' => WordPressRecipePublish::class,
         'method' => 'handle_tool_call',
@@ -98,7 +92,18 @@ function dm_recipes_get_dynamic_recipe_tool(array $recipe_config): array {
             'post_content' => [
                 'type' => 'string',
                 'required' => true,
-                'description' => 'Recipe article content formatted as WordPress Gutenberg blocks. Use <!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --> for paragraphs, <!-- wp:list --><ul><li>Item</li></ul><!-- /wp:list --> for lists.'
+                'description' => 'Recipe article content formatted as WordPress Gutenberg blocks. Use <!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --> for paragraphs.
+
+HEADINGS - Use proper heading hierarchy for recipe sections:
+• H2: <!-- wp:heading --><h2 class="wp-block-heading">Ingredients</h2><!-- /wp:heading -->
+• H3: <!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Instructions</h3><!-- /wp:heading -->
+• H4: <!-- wp:heading {"level":4} --><h4 class="wp-block-heading">Tips & Notes</h4><!-- /wp:heading -->
+
+LISTS - Use correct block syntax:
+• Unordered lists: <!-- wp:list --><ul class="wp-block-list"><li>Item 1</li><li>Item 2</li></ul><!-- /wp:list -->
+• Ordered lists (recipe steps): <!-- wp:list {"ordered":true} --><ol class="wp-block-list"><li>Step 1</li><li>Step 2</li></ol><!-- /wp:list -->
+
+Use ordered lists for recipe instructions and cooking steps to ensure proper formatting and semantic HTML.'
             ],
             'recipeName' => [
                 'type' => 'string',
@@ -203,11 +208,9 @@ function dm_recipes_get_dynamic_recipe_tool(array $recipe_config): array {
         'handler_config' => $recipe_config
     ];
     
-    // Add dynamic taxonomy parameters based on configuration (like Data Machine)
     $taxonomies = get_taxonomies(['public' => true], 'objects');
     
     foreach ($taxonomies as $taxonomy) {
-        // Skip built-in formats and other non-content taxonomies
         if (in_array($taxonomy->name, ['post_format', 'nav_menu', 'link_category'])) {
             continue;
         }
@@ -215,7 +218,6 @@ function dm_recipes_get_dynamic_recipe_tool(array $recipe_config): array {
         $field_key = "taxonomy_{$taxonomy->name}_selection";
         $selection = $recipe_config[$field_key] ?? 'skip';
         
-        // Only include taxonomies set to "ai_decides"
         if ($selection === 'ai_decides') {
             $parameter_name = $taxonomy->name === 'category' ? 'category' :
                              ($taxonomy->name === 'post_tag' ? 'tags' : $taxonomy->name);
@@ -239,5 +241,4 @@ function dm_recipes_get_dynamic_recipe_tool(array $recipe_config): array {
     return $tool;
 }
 
-// Auto-register when file loads - achieving complete self-containment
 dm_recipes_register_wordpress_recipe_publish_filters();

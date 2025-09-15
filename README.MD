@@ -49,15 +49,17 @@ npm run build
 
 ### AI-Powered Recipe Publishing
 1. **Data Machine Integration**: The plugin registers a `wordpress_recipe_publish` handler with Data Machine's filter-based discovery system
-2. **AI Tool Registration**: Provides the `recipe_publish` AI tool with comprehensive Schema.org Recipe parameters
+2. **AI Tool Registration**: Provides the `wordpress_recipe_publish` AI tool with comprehensive Schema.org Recipe parameters
 3. **Automated Publishing**: AI agents can create WordPress posts with embedded Recipe Schema blocks containing complete structured data
 4. **Schema.org Compliance**: Generated posts include both JSON-LD and microdata markup for optimal SEO
 
 ### Recipe Schema Block
 - **Complete Attribute Support**: All Schema.org Recipe properties including nutrition, dietary restrictions, cooking methods, and video content
-- **Gutenberg Integration**: Native WordPress block editor integration
-- **Structured Data Output**: Automatic generation of JSON-LD structured data and HTML microdata
-- **Search Engine Optimization**: Rich snippets and enhanced search results
+- **Gutenberg Integration**: Native WordPress block editor integration with sophisticated React components
+- **Dual Structured Data Output**: Automatic generation of both JSON-LD structured data and HTML microdata
+- **WordPress Integration**: Uses post author data and rating system for aggregate ratings
+- **Search Engine Optimization**: Rich snippets and enhanced search results through proper Schema.org markup
+- **Enhanced Formatting**: Comprehensive Gutenberg block syntax guidelines for optimal content structure
 
 ## Usage
 
@@ -72,9 +74,9 @@ Add the "Recipe Schema" block to any WordPress post or page and fill in the reci
 
 ## AI Tool Parameters
 
-The `recipe_publish` tool accepts comprehensive recipe data:
+The `wordpress_recipe_publish` tool accepts comprehensive recipe data:
 
-- **Post Content**: `post_title`, `post_content`, `post_status`, `post_author`, `post_category`
+- **Post Content**: `post_title`, `post_content` (with Gutenberg block formatting guidelines)
 - **Recipe Basics**: `recipeName`, `description`, `images`, `author`
 - **Timing**: `prepTime`, `cookTime`, `totalTime` (ISO 8601 format)
 - **Content**: `recipeIngredient[]`, `recipeInstructions[]`, `recipeYield`
@@ -124,9 +126,10 @@ composer lint:fix:php                    # WordPress auto-fix
 ### Handler Registration
 Self-registering via WordPress filters:
 - `dm_handlers` - Handler discovery
-- `ai_tools` - AI tool registration
+- `ai_tools` - AI tool registration with dynamic taxonomy parameters
 - `dm_handler_settings` - Configuration management
-- `dm_handler_directives` - AI model guidance
+- `dm_handler_directives` - AI model guidance for recipe content generation
+- `dm_tool_success_message` - Custom success message formatting for recipe publishing
 
 ### File Structure
 ```

@@ -1,21 +1,21 @@
 <?php
 /**
  * Recipe Schema Gutenberg Block Implementation
- * 
+ *
  * Provides complete Schema.org Recipe structured data generation through a Gutenberg block.
  * Renders both microdata and JSON-LD markup for optimal SEO and rich snippets in search results.
  * Integrates with WordPress post rating system and supports comprehensive recipe attributes.
- * 
+ *
  * @package DM_Recipes
  * @since 1.0.0
  */
 
 /**
  * Register Recipe Schema block with WordPress.
- * 
+ *
  * Registers the dm-recipes/recipe-schema block type using the compiled block.json
  * definition and server-side rendering callback for Schema.org markup generation.
- * 
+ *
  * @since 1.0.0
  */
 function dm_recipes_register_recipe_schema_block() {
@@ -26,11 +26,11 @@ function dm_recipes_register_recipe_schema_block() {
 
 /**
  * Render Recipe Schema block with comprehensive structured data.
- * 
+ *
  * Generates both microdata and JSON-LD structured data for Schema.org Recipe compliance.
  * Outputs hidden HTML elements with microdata attributes and injects JSON-LD script
  * for search engine optimization and rich snippet generation.
- * 
+ *
  * @param array $attributes Block attributes containing recipe data from Gutenberg editor
  * @return string Complete HTML output with Schema.org markup (hidden from frontend)
  * @since 1.0.0
@@ -70,7 +70,6 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
     <!-- Recipe Schema Data (hidden from frontend display) -->
     <div class="recipe-schema-data" style="display: none;" itemscope itemtype="https://schema.org/Recipe">
         
-        <!-- Hidden microdata for search engines -->
         <?php if ( ! empty( $attributes['recipeName'] ) ) : ?>
             <meta itemprop="name" content="<?php echo esc_attr( $attributes['recipeName'] ); ?>" />
         <?php endif; ?>
@@ -123,7 +122,6 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
         <?php endif; ?>
         
         <?php
-        // Integrate with WordPress rating system for aggregate rating display
         $rating_value = get_post_meta( $post->ID, 'rating_value', true );
         $review_count = get_post_meta( $post->ID, 'review_count', true );
         
@@ -158,7 +156,6 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
         <?php endif; ?>
         
         <?php 
-        // Use provided publication date or fall back to post date
         $date_published = ! empty( $attributes['datePublished'] ) ? $attributes['datePublished'] : get_the_date( 'c', $post->ID );
         ?>
         <meta itemprop="datePublished" content="<?php echo esc_attr( $date_published ); ?>" />
@@ -166,7 +163,6 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
     </div>
     
     <?php
-    // Generate and output JSON-LD structured data for search engines
     $schema_data = dm_recipes_generate_recipe_jsonld( $attributes, $post );
     if ( ! empty( $schema_data ) ) {
         echo '<script type="application/ld+json">' . wp_json_encode( $schema_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>';
@@ -177,11 +173,11 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
 
 /**
  * Generate JSON-LD structured data for Schema.org Recipe.
- * 
+ *
  * Transforms recipe block attributes into complete Schema.org Recipe JSON-LD format
  * with proper @context and @type declarations. Includes aggregate rating integration
  * from WordPress post meta and comprehensive recipe property mapping.
- * 
+ *
  * @param array   $attributes Recipe block attributes from Gutenberg
  * @param WP_Post $post       WordPress post object for date and rating context
  * @return array Complete Schema.org Recipe structured data array
@@ -260,7 +256,6 @@ function dm_recipes_generate_recipe_jsonld( $attributes, $post ) {
         ? $attributes['datePublished'] 
         : get_the_date( 'c', $post->ID );
     
-    // Integrate aggregate rating data from WordPress post meta
     $rating_value = get_post_meta( $post->ID, 'rating_value', true );
     $review_count = get_post_meta( $post->ID, 'review_count', true );
     
@@ -318,11 +313,11 @@ function dm_recipes_generate_recipe_jsonld( $attributes, $post ) {
 
 /**
  * Convert ISO 8601 duration to human-readable format.
- * 
+ *
  * Parses ISO 8601 duration strings (PT30M, PT1H30M) and converts them to
  * human-readable format for frontend display. Handles hours and minutes
  * with proper pluralization.
- * 
+ *
  * @param string $duration ISO 8601 duration string (e.g., "PT30M", "PT1H30M")
  * @return string Human-readable duration (e.g., "30 minutes", "1 hour 30 minutes")
  * @since 1.0.0

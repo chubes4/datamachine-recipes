@@ -19,14 +19,14 @@ class WordPressRecipePublish {
 
     /**
      * Handle AI tool execution for recipe publishing.
-     * 
+     *
      * Creates a WordPress post with the provided content and embeds a Recipe Schema block
      * containing comprehensive Schema.org structured data. Processes configuration from
      * Data Machine's handler settings including taxonomy assignments.
-     * 
+     *
      * @param array $parameters AI tool parameters containing recipe data and post content
      * @param array $tool_def   Tool definition with handler configuration
-     * @return array Success/failure response with post details for AI agent
+     * @return array Success/failure response with nested data object and tool_name for Data Machine
      * @since 1.0.0
      */
     public function handle_tool_call( array $parameters, array $tool_def = [] ): array {
@@ -37,7 +37,6 @@ class WordPressRecipePublish {
             ];
         }
 
-        // Extract config using Data Machine pattern (handles nested structure) - NO FALLBACKS
         if ( empty( $tool_def['handler_config'] ) ) {
             return [
                 'success' => false,
@@ -54,7 +53,6 @@ class WordPressRecipePublish {
             ];
         }
         
-        // Validate required configuration settings - NO FALLBACKS
         if ( empty( $handler_config['post_type'] ) ) {
             return [
                 'success' => false,
@@ -76,10 +74,8 @@ class WordPressRecipePublish {
             ];
         }
         
-        // Apply global defaults like Data Machine WordPress publisher
         $handler_config = apply_filters('dm_apply_global_defaults', $handler_config, 'wordpress_recipe_publish', 'publish');
 
-        // Create recipe schema block using AI parameters
         $recipe_block_result = $this->create_recipe_schema_block( $parameters, $handler_config );
         
         if ( ! $recipe_block_result['success'] ) {
@@ -89,7 +85,6 @@ class WordPressRecipePublish {
             ];
         }
 
-        // Append recipe block to AI-generated article content
         $content = wp_kses_post( wp_unslash( $parameters['post_content'] ?? '' ) );
         $content .= "\n\n" . $recipe_block_result['block'];
 
@@ -110,7 +105,6 @@ class WordPressRecipePublish {
             ];
         }
         
-        // Process taxonomies using Data Machine's system (after successful post creation)
         $taxonomy_results = $this->process_taxonomies_from_settings( $post_id, $parameters, $handler_config );
         
 
@@ -129,18 +123,17 @@ class WordPressRecipePublish {
     
     /**
      * Create Recipe Schema Gutenberg block from AI parameters.
-     * 
+     *
      * Transforms AI-provided recipe data into a properly formatted Gutenberg block
      * with comprehensive Schema.org Recipe attributes. Handles sanitization,
      * validation, and JSON encoding for block attributes.
-     * 
+     *
      * @param array $parameters     AI tool parameters containing recipe data
      * @param array $handler_config Handler configuration for author attribution
      * @return array Success/failure response with generated block HTML
      * @since 1.0.0
      */
     private function create_recipe_schema_block( array $parameters, array $handler_config = [] ): array {
-        // Build recipe data from AI parameters
         $recipe_data = [
             'recipeName' => sanitize_text_field( $parameters['recipeName'] ?? '' ),
             'description' => wp_kses_post( $parameters['description'] ?? '' ),
@@ -166,7 +159,6 @@ class WordPressRecipePublish {
             }, $parameters['images'] );
         }
         
-        // Set author data from handler configuration - NO FALLBACKS
         $author_user = get_userdata( $handler_config['post_author'] );
         if ( $author_user ) {
             $recipe_data['author'] = [
@@ -203,7 +195,6 @@ class WordPressRecipePublish {
         
         $recipe_data['datePublished'] = sanitize_text_field( $parameters['datePublished'] ?? '' ) ?: current_time( 'c' );
         
-        // Encode recipe data as JSON for block attributes
         $block_attributes = wp_json_encode( $recipe_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
         
         if ( $block_attributes === false ) {
@@ -213,7 +204,6 @@ class WordPressRecipePublish {
             ];
         }
         
-        // Generate Gutenberg block HTML
         $block_html = '<!-- wp:dm-recipes/recipe-schema ' . $block_attributes . ' -->' . "\n" .
                      '<!-- /wp:dm-recipes/recipe-schema -->';
         
@@ -225,10 +215,10 @@ class WordPressRecipePublish {
     
     /**
      * Sanitize array input for recipe data.
-     * 
+     *
      * Filters and sanitizes array values, removing empty entries and applying
      * sanitize_text_field to each element for security.
-     * 
+     *
      * @param mixed $input Raw input to sanitize
      * @return array Sanitized array with filtered, clean values
      * @since 1.0.0
@@ -244,26 +234,23 @@ class WordPressRecipePublish {
      * Process taxonomies based on handler configuration settings.
      * Copied from Data Machine WordPress publisher.
      *
-     * @param int $post_id Post ID.
-     * @param array $parameters AI tool parameters.
-     * @param array $handler_config Handler configuration from settings.
-     * @return array Taxonomy processing results.
+     * @param int   $post_id        Post ID
+     * @param array $parameters     AI tool parameters
+     * @param array $handler_config Handler configuration from settings
+     * @return array Taxonomy processing results
      */
     private function process_taxonomies_from_settings(int $post_id, array $parameters, array $handler_config): array {
         $taxonomy_results = [];
         
-        // Get all public taxonomies to process
         $taxonomies = get_taxonomies(['public' => true], 'objects');
         
         foreach ($taxonomies as $taxonomy) {
-            // Skip built-in formats and other non-content taxonomies
             if (in_array($taxonomy->name, ['post_format', 'nav_menu', 'link_category'])) {
                 continue;
             }
             
             $field_key = "taxonomy_{$taxonomy->name}_selection";
             
-            // NO FALLBACKS - taxonomy selection must be explicitly configured
             if ( ! isset( $handler_config[$field_key] ) ) {
                 $taxonomy_results[$taxonomy->name] = [
                     'success' => false,
@@ -275,11 +262,9 @@ class WordPressRecipePublish {
             $selection = $handler_config[$field_key];
             
             if ($selection === 'skip') {
-                // Skip - no assignment for this taxonomy
                 continue;
                 
             } elseif ($selection === 'ai_decides') {
-                // AI Decides - use AI-provided parameter if available
                 $param_name = $taxonomy->name === 'category' ? 'category' : 
                              ($taxonomy->name === 'post_tag' ? 'tags' : $taxonomy->name);
                 
@@ -289,7 +274,6 @@ class WordPressRecipePublish {
                 }
                 
             } elseif (is_numeric($selection)) {
-                // Specific term ID selected - assign that term
                 $term_id = absint($selection);
                 $term = get_term($term_id, $taxonomy->name);
                 
@@ -320,13 +304,12 @@ class WordPressRecipePublish {
      * Assign custom taxonomy to post.
      * Copied from Data Machine WordPress publisher.
      *
-     * @param int $post_id Post ID.
-     * @param string $taxonomy_name Taxonomy name.
-     * @param mixed $taxonomy_value Taxonomy value (string or array).
-     * @return array Assignment result.
+     * @param int    $post_id       Post ID
+     * @param string $taxonomy_name Taxonomy name
+     * @param mixed  $taxonomy_value Taxonomy value (string or array)
+     * @return array Assignment result
      */
     private function assign_taxonomy(int $post_id, string $taxonomy_name, $taxonomy_value): array {
-        // Validate taxonomy exists
         if (!taxonomy_exists($taxonomy_name)) {
             return [
                 'success' => false,
@@ -337,14 +320,12 @@ class WordPressRecipePublish {
         $taxonomy_obj = get_taxonomy($taxonomy_name);
         $term_ids = [];
         
-        // Handle array of terms or single term
         $terms = is_array($taxonomy_value) ? $taxonomy_value : [$taxonomy_value];
         
         foreach ($terms as $term_name) {
             $term_name = sanitize_text_field($term_name);
             if (empty($term_name)) continue;
             
-            // Get or create term
             $term = get_term_by('name', $term_name, $taxonomy_name);
             if (!$term) {
                 $term_result = wp_insert_term($term_name, $taxonomy_name);

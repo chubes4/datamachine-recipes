@@ -39,7 +39,7 @@ add_filter('dm_handlers', function($handlers) {
 // Register AI tool for agent execution
 add_filter('ai_tools', function($tools, $handler_slug = null, $handler_config = []) {
     if ($handler_slug === 'wordpress_recipe_publish') {
-        $tools['recipe_publish'] = [
+        $tools['wordpress_recipe_publish'] = [
             'class' => WordPressRecipePublish::class,
             'method' => 'handle_tool_call',
             'handler' => 'wordpress_recipe_publish',
@@ -57,9 +57,20 @@ The handler implements `handle_tool_call(array $parameters, array $tool_def = []
 ```php
 public function handle_tool_call($parameters, $tool_def = []) {
     // 1. Create WordPress post with provided content
-    // 2. Add Recipe Schema block with structured data  
-    // 3. Return success/failure status for AI agent
-    // Fully implemented with comprehensive error handling and validation
+    // 2. Add Recipe Schema block with structured data
+    // 3. Return Data Machine-compliant response structure for AI agent
+
+    return [
+        'success' => true,
+        'data' => [
+            'post_id' => $post_id,
+            'post_title' => $parameters['post_title'],
+            'post_url' => get_permalink($post_id),
+            'edit_url' => get_edit_post_link($post_id, 'raw'),
+            'taxonomy_results' => $taxonomy_results
+        ],
+        'tool_name' => 'wordpress_recipe_publish'
+    ];
 }
 ```
 
@@ -75,9 +86,11 @@ The recipe block supports complete Schema.org Recipe markup including:
 - **Advanced**: `nutrition{}`, `suitableForDiet[]`, `video{}`, `tool[]`, `supply[]`
 
 ### Structured Data Output
-The block generates both:
+The block generates comprehensive Schema.org Recipe markup:
 1. **Microdata**: HTML with `itemscope`, `itemtype`, and `itemprop` attributes
 2. **JSON-LD**: Complete Schema.org Recipe structured data for search engines
+3. **WordPress Integration**: Uses post author data and rating system for aggregate ratings
+4. **SEO Optimization**: Rich snippets and enhanced search results through proper structured data
 
 ## Development Commands
 
@@ -153,7 +166,11 @@ dm-recipes/
 The `WordPressRecipePublishFilters.php` file is fully implemented and registers the handler with Data Machine's filter-based discovery system via `dm_handlers`, `ai_tools`, `dm_handler_settings`, and `dm_handler_directives` filters.
 
 ### AI Tool Integration ✅
-The handler fully implements the `handle_tool_call()` method with comprehensive parameter processing, WordPress post creation, Recipe Schema block embedding, error handling, and detailed success/failure responses for AI agents.
+The handler fully implements the `handle_tool_call()` method with comprehensive parameter processing, WordPress post creation, Recipe Schema block embedding, error handling, and Data Machine-compliant response structure. Features include:
+- **Custom Success Messaging**: Recipe-specific success message formatting with post title and URL
+- **Gutenberg Block Formatting Guidelines**: Comprehensive instructions for proper WordPress block syntax
+- **Enhanced Error Handling**: Detailed validation and error reporting for AI agents
+- **Data Machine Compliance**: Structured return format with nested `data` object and `tool_name` field
 
 ### Gutenberg Block Implementation ✅ 
 Recipe Schema block features sophisticated React-based editor interface with comprehensive Schema.org support:
