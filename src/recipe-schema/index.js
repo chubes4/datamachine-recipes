@@ -10,7 +10,7 @@
  */
 
 import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, MediaUpload, MediaUploadCheck, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { 
     PanelBody, 
     TextControl, 
@@ -226,7 +226,6 @@ registerBlockType('dm-recipes/recipe-schema', {
         const {
             recipeName,
             description,
-            images,
             prepTime,
             cookTime,
             totalTime,
@@ -275,7 +274,7 @@ registerBlockType('dm-recipes/recipe-schema', {
                         🍽️ {__('Recipe Schema Block', 'dm-recipes')}
                     </h3>
                     <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-                        {__('This block generates structured data for search engines. Content is not displayed on the frontend but provides rich recipe information for SEO and search results.', 'dm-recipes')}
+                        {__('This block generates structured data for search engines using the post featured image. Content is not displayed on the frontend but provides rich recipe information for SEO and search results.', 'dm-recipes')}
                     </p>
                 </div>
 
@@ -299,49 +298,6 @@ registerBlockType('dm-recipes/recipe-schema', {
                         style={{ marginBottom: '12px' }}
                     />
                     
-                    <div style={{ marginBottom: '12px' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                            {__('Recipe Images', 'dm-recipes')}
-                        </label>
-                        <MediaUploadCheck>
-                            <MediaUpload
-                                onSelect={(media) => {
-                                    const mediaArray = Array.isArray(media) ? media : [media];
-                                    setAttributes({
-                                        images: mediaArray.map(item => ({
-                                            id: item.id,
-                                            url: item.url,
-                                            alt: item.alt || item.title
-                                        }))
-                                    });
-                                }}
-                                allowedTypes={['image']}
-                                multiple={true}
-                                value={images.map(img => img.id)}
-                                render={({ open }) => (
-                                    <Button isPrimary onClick={open}>
-                                        {images.length > 0 
-                                            ? __('Change Images', 'dm-recipes') 
-                                            : __('Add Images', 'dm-recipes')
-                                        }
-                                    </Button>
-                                )}
-                            />
-                        </MediaUploadCheck>
-                        
-                        {images.length > 0 && (
-                            <div style={{ marginTop: '10px' }}>
-                                {images.map((image, index) => (
-                                    <img 
-                                        key={index} 
-                                        src={image.url} 
-                                        alt={image.alt}
-                                        style={{ width: '80px', height: '80px', objectFit: 'cover', margin: '5px', borderRadius: '4px' }}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
                 </div>
 
                 <div style={{ marginBottom: '24px' }}>

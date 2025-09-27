@@ -21,10 +21,6 @@
       "type": "string",
       "default": ""
     },
-    "images": {
-      "type": "array",
-      "default": []
-    },
     "prepTime": {
       "type": "string",
       "default": ""

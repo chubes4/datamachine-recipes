@@ -41,7 +41,6 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
     $defaults = [
         'recipeName' => '',
         'description' => '',
-        'images' => [],
         'prepTime' => '',
         'cookTime' => '',
         'totalTime' => '',
@@ -78,12 +77,11 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
             <meta itemprop="description" content="<?php echo esc_attr( wp_strip_all_tags( $attributes['description'] ) ); ?>" />
         <?php endif; ?>
         
-        <?php if ( ! empty( $attributes['images'] ) ) : ?>
-            <?php foreach ( $attributes['images'] as $index => $image ) : ?>
-                <?php if ( $index < 6 ) : ?>
-                    <meta itemprop="image" content="<?php echo esc_url( $image['url'] ); ?>" />
-                <?php endif; ?>
-            <?php endforeach; ?>
+        <?php
+        // Use featured image for recipe schema
+        $featured_image_url = get_the_post_thumbnail_url( $post->ID, 'full' );
+        if ( $featured_image_url ) : ?>
+            <meta itemprop="image" content="<?php echo esc_url( $featured_image_url ); ?>" />
         <?php endif; ?>
         
         <?php if ( ! empty( $attributes['prepTime'] ) ) : ?>
@@ -197,11 +195,10 @@ function dm_recipes_generate_recipe_jsonld( $attributes, $post ) {
         $schema['description'] = wp_strip_all_tags( $attributes['description'] );
     }
     
-    if ( ! empty( $attributes['images'] ) ) {
-        $schema['image'] = array();
-        foreach ( $attributes['images'] as $image ) {
-            $schema['image'][] = $image['url'];
-        }
+    // Use featured image for recipe schema
+    $featured_image_url = get_the_post_thumbnail_url( $post->ID, 'full' );
+    if ( $featured_image_url ) {
+        $schema['image'] = $featured_image_url;
     }
     
     if ( ! empty( $attributes['prepTime'] ) ) {
