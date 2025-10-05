@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Version**: 1.0.0
+
 ## Architecture Overview
 
 **DM-Recipes** is a Data Machine extension plugin that adds recipe publishing capabilities with full Schema.org structured data support. It integrates with the Data Machine Pipeline+Flow system through a **filter-based discovery** architecture.
@@ -125,7 +127,7 @@ composer lint:fix:php                    # Auto-fix with WordPress standards
 # 2. Install npm dependencies and run frontend build (npm ci && npm run build)
 # 3. Copy files using rsync excluding development files and source directories
 # 4. Validate all required files including compiled build/ assets
-# 5. Create versioned ZIP file for WordPress deployment
+# 5. Create ZIP file for WordPress deployment
 # 6. Restore development dependencies
 ```
 

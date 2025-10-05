@@ -10,6 +10,8 @@
  * @since 1.0.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * Register Recipe Schema block with WordPress.
  *
