@@ -125,11 +125,11 @@ composer lint:fix:php                    # WordPress auto-fix
 
 ### Handler Registration
 Self-registering via WordPress filters:
-- `dm_handlers` - Handler discovery
+- `datamachine_handlers` - Handler discovery
 - `ai_tools` - AI tool registration with dynamic taxonomy parameters
-- `dm_handler_settings` - Configuration management
-- `dm_handler_directives` - AI model guidance for recipe content generation
-- `dm_tool_success_message` - Custom success message formatting for recipe publishing
+- `datamachine_handler_settings` - Configuration management
+- `datamachine_handler_directives` - AI model guidance for recipe content generation
+- `datamachine_tool_success_message` - Custom success message formatting for recipe publishing
 
 ### File Structure
 ```

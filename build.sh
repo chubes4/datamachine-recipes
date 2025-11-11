@@ -5,8 +5,8 @@
 set -e  # Exit on any error
 
 # Plugin information
-PLUGIN_NAME="dm-recipes"
-PLUGIN_VERSION=$(grep "Version:" dm-recipes.php | sed 's/.*Version: *\([0-9.]*\).*/\1/')
+PLUGIN_NAME="data-machine-recipes"
+PLUGIN_VERSION=$(grep "Version:" data-machine-recipes.php | sed 's/.*Version: *\([0-9.]*\).*/\1/')
 BUILD_DIR="dist"
 ZIP_NAME="${PLUGIN_NAME}-${PLUGIN_VERSION}.zip"
 
@@ -53,7 +53,7 @@ rsync -av \
 # Validate essential files exist
 echo "✅ Validating build..."
 REQUIRED_FILES=(
-    "dm-recipes.php"
+    "data-machine-recipes.php"
     "inc/handlers/WordPressRecipePublish/WordPressRecipePublish.php"
     "inc/handlers/WordPressRecipePublish/WordPressRecipePublishFilters.php"
     "inc/blocks/recipe-schema/recipe-schema.php"
@@ -75,6 +75,10 @@ echo "📦 Creating ZIP file..."
 cd ${BUILD_DIR}
 zip -r "${PLUGIN_NAME}.zip" ${PLUGIN_NAME}/
 cd ..
+
+# Clean up temporary build directory
+echo "🧹 Cleaning up temporary files..."
+rm -rf "${BUILD_DIR}/${PLUGIN_NAME}"
 
 # Restore development dependencies
 echo "🔄 Restoring development dependencies..."

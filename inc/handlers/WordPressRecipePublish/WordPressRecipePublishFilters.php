@@ -1,5 +1,5 @@
 <?php
-namespace DM_Recipes\WordPressRecipePublish;
+namespace DataMachineRecipes\WordPressRecipePublish;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -15,14 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-function dm_recipes_register_wordpress_recipe_publish_filters() {
+function datamachine_recipes_register_wordpress_recipe_publish_filters() {
     
-    add_filter( 'dm_handlers', function( $handlers ) {
+    add_filter( 'datamachine_handlers', function( $handlers ) {
         $handlers['wordpress_recipe_publish'] = [
             'type' => 'publish',
             'class' => WordPressRecipePublish::class,
-            'label' => __( 'WordPress Recipe', 'dm-recipes' ),
-            'description' => __( 'Publish recipes to WordPress with Schema.org structured data markup', 'dm-recipes' )
+            'label' => __( 'WordPress Recipe', 'data-machine-recipes' ),
+            'description' => __( 'Publish recipes to WordPress with Schema.org structured data markup', 'data-machine-recipes' )
         ];
         return $handlers;
     } );
@@ -33,9 +33,9 @@ function dm_recipes_register_wordpress_recipe_publish_filters() {
             $recipe_config = $handler_config['wordpress_recipe_publish'] ?? $handler_config;
             
             // Apply global defaults like Data Machine WordPress publisher
-            $recipe_config = apply_filters('dm_apply_global_defaults', $recipe_config, 'wordpress_recipe_publish', 'publish');
+            $recipe_config = apply_filters('datamachine_apply_global_defaults', $recipe_config, 'wordpress_recipe_publish', 'publish');
             
-            $tools['wordpress_recipe_publish'] = dm_recipes_get_dynamic_recipe_tool($recipe_config);
+            $tools['wordpress_recipe_publish'] = datamachine_recipes_get_dynamic_recipe_tool($recipe_config);
         }
         return $tools;
     }, 10, 3 );
@@ -50,7 +50,7 @@ function dm_recipes_register_wordpress_recipe_publish_filters() {
         return $directives;
     } );
 
-    add_filter('dm_tool_success_message', function($default_message, $tool_name, $tool_result, $tool_parameters) {
+    add_filter('datamachine_tool_success_message', function($default_message, $tool_name, $tool_result, $tool_parameters) {
         if ($tool_name === 'wordpress_recipe_publish') {
             $data = $tool_result['data'] ?? [];
             $title = $data['post_title'] ?? $tool_parameters['post_title'] ?? '';
@@ -77,7 +77,7 @@ function dm_recipes_register_wordpress_recipe_publish_filters() {
  * @param array $recipe_config Recipe handler configuration
  * @return array Dynamic tool configuration with wordpress_recipe_publish tool definition
  */
-function dm_recipes_get_dynamic_recipe_tool(array $recipe_config): array {
+function datamachine_recipes_get_dynamic_recipe_tool(array $recipe_config): array {
     $tool = [
         'class' => WordPressRecipePublish::class,
         'method' => 'handle_tool_call',
@@ -211,10 +211,11 @@ Use ordered lists for recipe instructions and cooking steps to ensure proper for
     $taxonomies = get_taxonomies(['public' => true], 'objects');
     
     foreach ($taxonomies as $taxonomy) {
-        if (in_array($taxonomy->name, ['post_format', 'nav_menu', 'link_category'])) {
+        $excluded = apply_filters('datamachine_wordpress_system_taxonomies', []);
+        if (in_array($taxonomy->name, $excluded)) {
             continue;
         }
-        
+
         $field_key = "taxonomy_{$taxonomy->name}_selection";
         $selection = $recipe_config[$field_key] ?? 'skip';
         
@@ -241,4 +242,4 @@ Use ordered lists for recipe instructions and cooking steps to ensure proper for
     return $tool;
 }
 
-dm_recipes_register_wordpress_recipe_publish_filters();
+datamachine_recipes_register_wordpress_recipe_publish_filters();

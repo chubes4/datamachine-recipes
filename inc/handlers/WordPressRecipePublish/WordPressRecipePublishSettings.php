@@ -1,5 +1,5 @@
 <?php
-namespace DM_Recipes\WordPressRecipePublish;
+namespace DataMachineRecipes\WordPressRecipePublish;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Manages WordPress post settings (type, status, author) and dynamic taxonomy
  * selection fields with comprehensive validation and sanitization.
  *
- * @package DM_Recipes\WordPressRecipePublish
+ * @package DataMachineRecipes\WordPressRecipePublish
  * @since 1.0.0
  */
 class WordPressRecipePublishSettings {
@@ -43,11 +43,11 @@ class WordPressRecipePublishSettings {
         return [
             'post_date_source' => [
                 'type' => 'select',
-                'label' => __('Post Date Setting', 'dm-recipes'),
-                'description' => __('Choose whether to use the original date from the source (if available) or the current date when publishing.', 'dm-recipes'),
+                'label' => __('Post Date Setting', 'data-machine-recipes'),
+                'description' => __('Choose whether to use the original date from the source (if available) or the current date when publishing.', 'data-machine-recipes'),
                 'options' => [
-                    'current_date' => __('Use Current Date', 'dm-recipes'),
-                    'source_date' => __('Use Source Date (if available)', 'dm-recipes'),
+                    'current_date' => __('Use Current Date', 'data-machine-recipes'),
+                    'source_date' => __('Use Source Date (if available)', 'data-machine-recipes'),
                 ],
             ],
         ];
@@ -84,25 +84,25 @@ class WordPressRecipePublishSettings {
         $fields = [
             'post_type' => [
                 'type' => 'select',
-                'label' => __('Post Type', 'dm-recipes'),
-                'description' => __('Select the post type for published content.', 'dm-recipes'),
+                'label' => __('Post Type', 'data-machine-recipes'),
+                'description' => __('Select the post type for published content.', 'data-machine-recipes'),
                 'options' => $post_type_options,
             ],
             'post_status' => [
                 'type' => 'select',
-                'label' => __('Post Status', 'dm-recipes'),
-                'description' => __('Select the status for the newly created post.', 'dm-recipes'),
+                'label' => __('Post Status', 'data-machine-recipes'),
+                'description' => __('Select the status for the newly created post.', 'data-machine-recipes'),
                 'options' => [
-                    'draft' => __('Draft', 'dm-recipes'),
-                    'publish' => __('Publish', 'dm-recipes'),
-                    'pending' => __('Pending Review', 'dm-recipes'),
-                    'private' => __('Private', 'dm-recipes'),
+                    'draft' => __('Draft', 'data-machine-recipes'),
+                    'publish' => __('Publish', 'data-machine-recipes'),
+                    'pending' => __('Pending Review', 'data-machine-recipes'),
+                    'private' => __('Private', 'data-machine-recipes'),
                 ],
             ],
             'post_author' => [
                 'type' => 'select',
-                'label' => __('Post Author', 'dm-recipes'),
-                'description' => __('Select which WordPress user to publish posts under.', 'dm-recipes'),
+                'label' => __('Post Author', 'data-machine-recipes'),
+                'description' => __('Select which WordPress user to publish posts under.', 'data-machine-recipes'),
                 'options' => $user_options,
             ],
         ];
@@ -121,16 +121,17 @@ class WordPressRecipePublishSettings {
         $taxonomies = get_taxonomies(['public' => true], 'objects');
         
         foreach ($taxonomies as $taxonomy) {
-            if (in_array($taxonomy->name, ['post_format', 'nav_menu', 'link_category'])) {
+            $excluded = apply_filters('datamachine_wordpress_system_taxonomies', []);
+            if (in_array($taxonomy->name, $excluded)) {
                 continue;
             }
-            
+
             $taxonomy_slug = $taxonomy->name;
             $taxonomy_label = $taxonomy->labels->name ?? $taxonomy->label;
             
             $options = [
-                'skip' => __('Skip', 'dm-recipes'),
-                'ai_decides' => __('AI Decides', 'dm-recipes')
+                'skip' => __('Skip', 'data-machine-recipes'),
+                'ai_decides' => __('AI Decides', 'data-machine-recipes')
             ];
             
             $terms = get_terms(['taxonomy' => $taxonomy_slug, 'hide_empty' => false]);
@@ -145,9 +146,9 @@ class WordPressRecipePublishSettings {
                 'type' => 'select',
                 'label' => $taxonomy_label,
                 'description' => sprintf(
-                    __('Configure %s assignment: Skip to exclude from AI instructions, let AI choose, or select specific %s.', 'dm-recipes'),
+                    __('Configure %s assignment: Skip to exclude from AI instructions, let AI choose, or select specific %s.', 'data-machine-recipes'),
                     strtolower($taxonomy_label),
-                    $taxonomy->hierarchical ? __('category', 'dm-recipes') : __('term', 'dm-recipes')
+                    $taxonomy->hierarchical ? __('category', 'data-machine-recipes') : __('term', 'data-machine-recipes')
                 ),
                 'options' => $options,
             ];
@@ -205,10 +206,11 @@ class WordPressRecipePublishSettings {
         $taxonomies = get_taxonomies(['public' => true], 'objects');
         
         foreach ($taxonomies as $taxonomy) {
-            if (in_array($taxonomy->name, ['post_format', 'nav_menu', 'link_category'])) {
+            $excluded = apply_filters('datamachine_wordpress_system_taxonomies', []);
+            if (in_array($taxonomy->name, $excluded)) {
                 continue;
             }
-            
+
             $field_key = "taxonomy_{$taxonomy->name}_selection";
             $raw_value = $raw_settings[$field_key] ?? 'skip';
             

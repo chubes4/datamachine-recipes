@@ -1,9 +1,9 @@
 {
-    "name": "chubes4/dm-recipes",
+    "name": "chubes4/data-machine-recipes",
     "description": "Data Machine extension for publishing recipes with Schema.org structured data",
     "type": "wordpress-plugin",
     "keywords": ["wordpress", "plugin", "recipes", "schema.org", "data-machine", "ai"],
-    "homepage": "https://github.com/chubes4/dm-recipes",
+    "homepage": "https://github.com/chubes4/data-machine-recipes",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "DM_Recipes\\": "inc/handlers/"
+            "DataMachineRecipes\\": "inc/handlers/"
         }
     },
     "scripts": {

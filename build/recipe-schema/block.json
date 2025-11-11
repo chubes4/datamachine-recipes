@@ -1,12 +1,12 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
-  "name": "dm-recipes/recipe-schema",
+  "name": "data-machine-recipes/recipe-schema",
   "title": "Recipe Schema",
   "category": "common",
   "icon": "food",
   "description": "Complete Schema.org Recipe structured data block with all recipe properties",
-  "textdomain": "dm-recipes",
+  "textdomain": "data-machine-recipes",
   "editorScript": "file:./index.js",
   "supports": {
     "html": false,

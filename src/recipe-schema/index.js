@@ -5,7 +5,7 @@
  * Features specialized components for duration input, array management, and tag handling.
  * Generates structured data attributes for server-side Schema.org markup rendering.
  *
- * @package DM_Recipes
+ * @package DataMachineRecipes
  * @since 1.0.0
  */
 
@@ -64,13 +64,13 @@ const DurationInput = ({ label, value, onChange }) => {
             <label>{label}</label>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <NumberControl
-                    label={__('Hours', 'dm-recipes')}
+                    label={__('Hours', 'data-machine-recipes')}
                     value={hours}
                     min={0}
                     onChange={(value) => setHours(parseInt(value) || 0)}
                 />
                 <NumberControl
-                    label={__('Minutes', 'dm-recipes')}
+                    label={__('Minutes', 'data-machine-recipes')}
                     value={minutes}
                     min={0}
                     max={59}
@@ -122,7 +122,7 @@ const ArrayInput = ({ label, items, onChange, placeholder }) => (
                         removeItem(index);
                     }}
                 >
-                    {__('Remove', 'dm-recipes')}
+                    {__('Remove', 'data-machine-recipes')}
                 </Button>
             </div>
         ))}
@@ -132,7 +132,7 @@ const ArrayInput = ({ label, items, onChange, placeholder }) => (
                 onChange([...items, '']);
             }}
         >
-            {__('Add Item', 'dm-recipes')}
+            {__('Add Item', 'data-machine-recipes')}
         </Button>
     </div>
 );
@@ -199,10 +199,10 @@ const TagInput = ({ label, tags, onChange }) => {
                             addTag();
                         }
                     }}
-                    placeholder={__('Enter tag and press Enter', 'dm-recipes')}
+                    placeholder={__('Enter tag and press Enter', 'data-machine-recipes')}
                 />
                 <Button isSecondary onClick={addTag}>
-                    {__('Add', 'dm-recipes')}
+                    {__('Add', 'data-machine-recipes')}
                 </Button>
             </div>
         </div>
@@ -216,11 +216,11 @@ const TagInput = ({ label, tags, onChange }) => {
  * Provides organized field groups (Basic Info, Timing, Categories, Nutrition, etc.)
  * and uses server-side rendering for Schema.org markup generation.
  */
-registerBlockType('dm-recipes/recipe-schema', {
-    title: __('Recipe Schema', 'dm-recipes'),
+registerBlockType('data-machine-recipes/recipe-schema', {
+    title: __('Recipe Schema', 'data-machine-recipes'),
     icon: 'food',
     category: 'common',
-    description: __('Complete Schema.org Recipe structured data block', 'dm-recipes'),
+    description: __('Complete Schema.org Recipe structured data block', 'data-machine-recipes'),
     
     edit: ({ attributes, setAttributes }) => {
         const {
@@ -248,17 +248,17 @@ registerBlockType('dm-recipes/recipe-schema', {
         const blockProps = useBlockProps();
         
         const cuisineOptions = [
-            { label: __('Select Cuisine', 'dm-recipes'), value: '' },
-            { label: __('American', 'dm-recipes'), value: 'American' },
-            { label: __('Italian', 'dm-recipes'), value: 'Italian' },
-            { label: __('Mexican', 'dm-recipes'), value: 'Mexican' },
-            { label: __('Chinese', 'dm-recipes'), value: 'Chinese' },
-            { label: __('Indian', 'dm-recipes'), value: 'Indian' },
-            { label: __('French', 'dm-recipes'), value: 'French' },
-            { label: __('Mediterranean', 'dm-recipes'), value: 'Mediterranean' },
-            { label: __('Asian', 'dm-recipes'), value: 'Asian' },
-            { label: __('European', 'dm-recipes'), value: 'European' },
-            { label: __('Other', 'dm-recipes'), value: 'Other' }
+            { label: __('Select Cuisine', 'data-machine-recipes'), value: '' },
+            { label: __('American', 'data-machine-recipes'), value: 'American' },
+            { label: __('Italian', 'data-machine-recipes'), value: 'Italian' },
+            { label: __('Mexican', 'data-machine-recipes'), value: 'Mexican' },
+            { label: __('Chinese', 'data-machine-recipes'), value: 'Chinese' },
+            { label: __('Indian', 'data-machine-recipes'), value: 'Indian' },
+            { label: __('French', 'data-machine-recipes'), value: 'French' },
+            { label: __('Mediterranean', 'data-machine-recipes'), value: 'Mediterranean' },
+            { label: __('Asian', 'data-machine-recipes'), value: 'Asian' },
+            { label: __('European', 'data-machine-recipes'), value: 'European' },
+            { label: __('Other', 'data-machine-recipes'), value: 'Other' }
         ];
         
         return (
@@ -271,27 +271,27 @@ registerBlockType('dm-recipes/recipe-schema', {
                     marginBottom: '20px' 
                 }}>
                     <h3 style={{ margin: '0 0 8px 0', color: '#1e1e1e' }}>
-                        🍽️ {__('Recipe Schema Block', 'dm-recipes')}
+                        🍽️ {__('Recipe Schema Block', 'data-machine-recipes')}
                     </h3>
                     <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-                        {__('This block generates structured data for search engines using the post featured image. Content is not displayed on the frontend but provides rich recipe information for SEO and search results.', 'dm-recipes')}
+                        {__('This block generates structured data for search engines using the post featured image. Content is not displayed on the frontend but provides rich recipe information for SEO and search results.', 'data-machine-recipes')}
                     </p>
                 </div>
 
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
-                        {__('Basic Information', 'dm-recipes')}
+                        {__('Basic Information', 'data-machine-recipes')}
                     </h4>
                     
                     <TextControl
-                        label={__('Recipe Name', 'dm-recipes')}
+                        label={__('Recipe Name', 'data-machine-recipes')}
                         value={recipeName}
                         onChange={(value) => setAttributes({ recipeName: value })}
                         style={{ marginBottom: '12px' }}
                     />
                     
                     <TextareaControl
-                        label={__('Description', 'dm-recipes')}
+                        label={__('Description', 'data-machine-recipes')}
                         value={description}
                         onChange={(value) => setAttributes({ description: value })}
                         rows={4}
@@ -302,30 +302,30 @@ registerBlockType('dm-recipes/recipe-schema', {
 
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
-                        {__('Timing', 'dm-recipes')}
+                        {__('Timing', 'data-machine-recipes')}
                     </h4>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                         <DurationInput
-                            label={__('Prep Time', 'dm-recipes')}
+                            label={__('Prep Time', 'data-machine-recipes')}
                             value={prepTime}
                             onChange={(value) => setAttributes({ prepTime: value })}
                         />
                         
                         <DurationInput
-                            label={__('Cook Time', 'dm-recipes')}
+                            label={__('Cook Time', 'data-machine-recipes')}
                             value={cookTime}
                             onChange={(value) => setAttributes({ cookTime: value })}
                         />
                         
                         <DurationInput
-                            label={__('Total Time', 'dm-recipes')}
+                            label={__('Total Time', 'data-machine-recipes')}
                             value={totalTime}
                             onChange={(value) => setAttributes({ totalTime: value })}
                         />
                         
                         <TextControl
-                            label={__('Yield (servings)', 'dm-recipes')}
+                            label={__('Yield (servings)', 'data-machine-recipes')}
                             value={recipeYield}
                             onChange={(value) => setAttributes({ recipeYield: value })}
                             placeholder="e.g., 4 servings"
@@ -335,19 +335,19 @@ registerBlockType('dm-recipes/recipe-schema', {
 
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
-                        {__('Categories & Cuisine', 'dm-recipes')}
+                        {__('Categories & Cuisine', 'data-machine-recipes')}
                     </h4>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                         <SelectControl
-                            label={__('Cuisine', 'dm-recipes')}
+                            label={__('Cuisine', 'data-machine-recipes')}
                             value={recipeCuisine}
                             options={cuisineOptions}
                             onChange={(value) => setAttributes({ recipeCuisine: value })}
                         />
                         
                         <TextControl
-                            label={__('Cooking Method', 'dm-recipes')}
+                            label={__('Cooking Method', 'data-machine-recipes')}
                             value={cookingMethod}
                             onChange={(value) => setAttributes({ cookingMethod: value })}
                             placeholder="e.g., Baking, Frying"
@@ -356,7 +356,7 @@ registerBlockType('dm-recipes/recipe-schema', {
                     
                     <div style={{ marginTop: '12px' }}>
                         <TagInput
-                            label={__('Recipe Categories', 'dm-recipes')}
+                            label={__('Recipe Categories', 'data-machine-recipes')}
                             tags={recipeCategory}
                             onChange={(value) => setAttributes({ recipeCategory: value })}
                         />
@@ -365,7 +365,7 @@ registerBlockType('dm-recipes/recipe-schema', {
 
                 <div style={{ marginBottom: '24px' }}>
                     <ArrayInput
-                        label={__('Recipe Ingredients', 'dm-recipes')}
+                        label={__('Recipe Ingredients', 'data-machine-recipes')}
                         items={recipeIngredient}
                         onChange={(value) => setAttributes({ recipeIngredient: value })}
                         placeholder="e.g., 1 cup flour, 2 eggs, 1/2 cup sugar"
@@ -374,7 +374,7 @@ registerBlockType('dm-recipes/recipe-schema', {
 
                 <div style={{ marginBottom: '24px' }}>
                     <ArrayInput
-                        label={__('Recipe Instructions', 'dm-recipes')}
+                        label={__('Recipe Instructions', 'data-machine-recipes')}
                         items={recipeInstructions}
                         onChange={(value) => setAttributes({ recipeInstructions: value })}
                         placeholder="Enter each step of the recipe"
@@ -383,40 +383,40 @@ registerBlockType('dm-recipes/recipe-schema', {
 
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
-                        {__('Nutrition Information (Optional)', 'dm-recipes')}
+                        {__('Nutrition Information (Optional)', 'data-machine-recipes')}
                     </h4>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
                         <TextControl
-                            label={__('Calories', 'dm-recipes')}
+                            label={__('Calories', 'data-machine-recipes')}
                             value={nutrition.calories || ''}
                             onChange={(value) => setAttributes({ nutrition: { ...nutrition, calories: value } })}
                             placeholder="250 calories"
                         />
                         
                         <TextControl
-                            label={__('Carbs', 'dm-recipes')}
+                            label={__('Carbs', 'data-machine-recipes')}
                             value={nutrition.carbohydrateContent || ''}
                             onChange={(value) => setAttributes({ nutrition: { ...nutrition, carbohydrateContent: value } })}
                             placeholder="30g"
                         />
                         
                         <TextControl
-                            label={__('Protein', 'dm-recipes')}
+                            label={__('Protein', 'data-machine-recipes')}
                             value={nutrition.proteinContent || ''}
                             onChange={(value) => setAttributes({ nutrition: { ...nutrition, proteinContent: value } })}
                             placeholder="15g"
                         />
                         
                         <TextControl
-                            label={__('Fat', 'dm-recipes')}
+                            label={__('Fat', 'data-machine-recipes')}
                             value={nutrition.fatContent || ''}
                             onChange={(value) => setAttributes({ nutrition: { ...nutrition, fatContent: value } })}
                             placeholder="10g"
                         />
                         
                         <TextControl
-                            label={__('Serving Size', 'dm-recipes')}
+                            label={__('Serving Size', 'data-machine-recipes')}
                             value={nutrition.servingSize || ''}
                             onChange={(value) => setAttributes({ nutrition: { ...nutrition, servingSize: value } })}
                             placeholder="1 cup"
@@ -426,12 +426,12 @@ registerBlockType('dm-recipes/recipe-schema', {
 
                 <div style={{ marginBottom: '24px' }}>
                     <h4 style={{ marginBottom: '12px', color: '#1e1e1e' }}>
-                        {__('Additional Information (Optional)', 'dm-recipes')}
+                        {__('Additional Information (Optional)', 'data-machine-recipes')}
                     </h4>
                     
                     <div style={{ marginBottom: '12px' }}>
                         <TagInput
-                            label={__('Keywords/Tags', 'dm-recipes')}
+                            label={__('Keywords/Tags', 'data-machine-recipes')}
                             tags={keywords}
                             onChange={(value) => setAttributes({ keywords: value })}
                         />
@@ -439,7 +439,7 @@ registerBlockType('dm-recipes/recipe-schema', {
                     
                     <div style={{ marginBottom: '12px' }}>
                         <TagInput
-                            label={__('Suitable for Diet', 'dm-recipes')}
+                            label={__('Suitable for Diet', 'data-machine-recipes')}
                             tags={suitableForDiet}
                             onChange={(value) => setAttributes({ suitableForDiet: value })}
                         />
@@ -447,7 +447,7 @@ registerBlockType('dm-recipes/recipe-schema', {
                     
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         <TextControl
-                            label={__('Estimated Cost', 'dm-recipes')}
+                            label={__('Estimated Cost', 'data-machine-recipes')}
                             value={estimatedCost}
                             onChange={(value) => setAttributes({ estimatedCost: value })}
                             placeholder="$15, £10"
@@ -456,7 +456,7 @@ registerBlockType('dm-recipes/recipe-schema', {
                     
                     <div style={{ marginTop: '12px' }}>
                         <ArrayInput
-                            label={__('Tools/Equipment', 'dm-recipes')}
+                            label={__('Tools/Equipment', 'data-machine-recipes')}
                             items={tool}
                             onChange={(value) => setAttributes({ tool: value })}
                             placeholder="e.g., mixing bowl, whisk, oven"

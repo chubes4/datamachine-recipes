@@ -1,5 +1,5 @@
 <?php
-namespace DM_Recipes\WordPressRecipePublish;
+namespace DataMachineRecipes\WordPressRecipePublish;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Creates WordPress posts with embedded Recipe Schema blocks for SEO and rich snippets.
  *
- * @package DM_Recipes\WordPressRecipePublish
+ * @package DataMachineRecipes\WordPressRecipePublish
  * @since 1.0.0
  */
 class WordPressRecipePublish {
@@ -68,7 +68,7 @@ class WordPressRecipePublish {
             ];
         }
         
-        $handler_config = apply_filters('dm_apply_global_defaults', $handler_config, 'wordpress_recipe_publish', 'publish');
+        $handler_config = apply_filters('datamachine_apply_global_defaults', $handler_config, 'wordpress_recipe_publish', 'publish');
 
         $recipe_block_result = $this->create_recipe_schema_block( $parameters, $handler_config );
         
@@ -153,11 +153,12 @@ class WordPressRecipePublish {
             }, $parameters['images'] );
         }
         
-        $author_user = get_userdata( $handler_config['post_author'] );
-        if ( $author_user ) {
+        $author_id = $handler_config['post_author'];
+        $author_name = apply_filters( 'dm_wordpress_user_display_name', null, $author_id );
+        if ( $author_name ) {
             $recipe_data['author'] = [
-                'name' => sanitize_text_field( $author_user->display_name ),
-                'url' => esc_url_raw( get_author_posts_url( $author_user->ID ) )
+                'name' => sanitize_text_field( $author_name ),
+                'url' => esc_url_raw( get_author_posts_url( $author_id ) )
             ];
         }
         
@@ -198,8 +199,8 @@ class WordPressRecipePublish {
             ];
         }
         
-        $block_html = '<!-- wp:dm-recipes/recipe-schema ' . $block_attributes . ' -->' . "\n" .
-                     '<!-- /wp:dm-recipes/recipe-schema -->';
+        $block_html = '<!-- wp:data-machine-recipes/recipe-schema ' . $block_attributes . ' -->' . "\n" .
+                     '<!-- /wp:data-machine-recipes/recipe-schema -->';
         
         return [
             'success' => true,
@@ -220,10 +221,11 @@ class WordPressRecipePublish {
         $taxonomies = get_taxonomies(['public' => true], 'objects');
         
         foreach ($taxonomies as $taxonomy) {
-            if (in_array($taxonomy->name, ['post_format', 'nav_menu', 'link_category'])) {
+            $excluded = apply_filters('datamachine_wordpress_system_taxonomies', []);
+            if (in_array($taxonomy->name, $excluded)) {
                 continue;
             }
-            
+
             $field_key = "taxonomy_{$taxonomy->name}_selection";
             
             if ( ! isset( $handler_config[$field_key] ) ) {

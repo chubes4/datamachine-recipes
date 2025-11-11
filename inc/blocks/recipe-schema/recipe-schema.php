@@ -6,7 +6,7 @@
  * Renders both microdata and JSON-LD markup for optimal SEO and rich snippets in search results.
  * Integrates with WordPress post rating system and supports comprehensive recipe attributes.
  *
- * @package DM_Recipes
+ * @package DataMachineRecipes
  * @since 1.0.0
  */
 
@@ -15,14 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Register Recipe Schema block with WordPress.
  *
- * Registers the dm-recipes/recipe-schema block type using the compiled block.json
+ * Registers the data-machine-recipes/recipe-schema block type using the compiled block.json
  * definition and server-side rendering callback for Schema.org markup generation.
  *
  * @since 1.0.0
  */
-function dm_recipes_register_recipe_schema_block() {
-    register_block_type( DM_RECIPES_PLUGIN_DIR . 'build/recipe-schema', array(
-        'render_callback' => 'dm_recipes_render_recipe_schema_block',
+function datamachine_recipes_register_recipe_schema_block() {
+    register_block_type( DATA_MACHINE_RECIPES_PLUGIN_DIR . 'build/recipe-schema', array(
+        'render_callback' => 'datamachine_recipes_render_recipe_schema_block',
     ) );
 }
 
@@ -37,7 +37,7 @@ function dm_recipes_register_recipe_schema_block() {
  * @return string Complete HTML output with Schema.org markup (hidden from frontend)
  * @since 1.0.0
  */
-function dm_recipes_render_recipe_schema_block( $attributes ) {
+function datamachine_recipes_render_recipe_schema_block( $attributes ) {
     global $post;
     
     $defaults = [
@@ -163,7 +163,7 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
     </div>
     
     <?php
-    $schema_data = dm_recipes_generate_recipe_jsonld( $attributes, $post );
+    $schema_data = datamachine_recipes_generate_recipe_jsonld( $attributes, $post );
     if ( ! empty( $schema_data ) ) {
         echo '<script type="application/ld+json">' . wp_json_encode( $schema_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>';
     }
@@ -183,7 +183,7 @@ function dm_recipes_render_recipe_schema_block( $attributes ) {
  * @return array Complete Schema.org Recipe structured data array
  * @since 1.0.0
  */
-function dm_recipes_generate_recipe_jsonld( $attributes, $post ) {
+function datamachine_recipes_generate_recipe_jsonld( $attributes, $post ) {
     $schema = array(
         '@context' => 'https://schema.org/',
         '@type' => 'Recipe'
@@ -321,7 +321,7 @@ function dm_recipes_generate_recipe_jsonld( $attributes, $post ) {
  * @return string Human-readable duration (e.g., "30 minutes", "1 hour 30 minutes")
  * @since 1.0.0
  */
-function dm_recipes_format_duration( $duration ) {
+function datamachine_recipes_format_duration( $duration ) {
     if ( strpos( $duration, 'PT' ) === 0 ) {
         $duration = substr( $duration, 2 );
         
