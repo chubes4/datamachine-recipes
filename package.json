@@ -8,7 +8,8 @@
     "start": "wp-scripts start",
     "lint:js": "wp-scripts lint-js",
     "lint:css": "wp-scripts lint-style",
-    "format": "wp-scripts format"
+    "format": "wp-scripts format",
+    "preinstall": "npx npm-force-resolutions"
   },
   "keywords": [
     "wordpress",
@@ -20,7 +21,8 @@
   "author": "Chris Huber",
   "license": "GPL-2.0-or-later",
   "devDependencies": {
-    "@wordpress/scripts": "^30.7.0"
+    "@wordpress/scripts": "^30.7.0",
+    "npm-force-resolutions": "^0.0.10"
   },
   "dependencies": {
     "@wordpress/block-editor": "^14.7.0",
@@ -28,5 +30,13 @@
     "@wordpress/components": "^30.7.0",
     "@wordpress/element": "^6.7.0",
     "@wordpress/i18n": "^6.7.0"
+  },
+  "overrides": {
+    "@babel/runtime": "^7.28.4",
+    "webpack-dev-server": "^5.2.2"
+  },
+  "resolutions": {
+    "@babel/runtime": "^7.28.4",
+    "webpack-dev-server": "^5.2.2"
   }
 }
