@@ -20,10 +20,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-define( 'DATA_MACHINE_RECIPES_VERSION', '1.0.0' );
-define( 'DATA_MACHINE_RECIPES_PLUGIN_FILE', __FILE__ );
-define( 'DATA_MACHINE_RECIPES_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'DATA_MACHINE_RECIPES_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'DATAMACHINE_RECIPES_VERSION', '1.0.0' );
+define( 'DATAMACHINE_RECIPES_PLUGIN_FILE', __FILE__ );
+define( 'DATAMACHINE_RECIPES_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'DATAMACHINE_RECIPES_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 spl_autoload_register( function( $class_name ) {
     if ( strpos( $class_name, 'DataMachineRecipes\\' ) !== 0 ) {
@@ -32,7 +32,7 @@ spl_autoload_register( function( $class_name ) {
 
     $relative_class = str_replace( 'DataMachineRecipes\\', '', $class_name );
     $relative_class = str_replace( '\\', '/', $relative_class );
-    $file = DATA_MACHINE_RECIPES_PLUGIN_DIR . 'inc/handlers/' . $relative_class . '.php';
+    $file = DATAMACHINE_RECIPES_PLUGIN_DIR . 'inc/handlers/' . $relative_class . '.php';
 
     if ( file_exists( $file ) ) {
         require_once $file;
@@ -48,9 +48,9 @@ spl_autoload_register( function( $class_name ) {
  * @since 1.0.0
  */
 function datamachine_recipes_init() {
-    load_plugin_textdomain( 'data-machine-recipes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-    require_once DATA_MACHINE_RECIPES_PLUGIN_DIR . 'inc/handlers/WordPressRecipePublish/WordPressRecipePublishFilters.php';
-    require_once DATA_MACHINE_RECIPES_PLUGIN_DIR . 'inc/blocks/recipe-schema/recipe-schema.php';
+    load_plugin_textdomain( 'datamachine-recipes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+    require_once DATAMACHINE_RECIPES_PLUGIN_DIR . 'inc/handlers/WordPressRecipePublish/WordPressRecipePublishFilters.php';
+    require_once DATAMACHINE_RECIPES_PLUGIN_DIR . 'inc/blocks/recipe-schema/recipe-schema.php';
 
     datamachine_recipes_register_recipe_schema_block();
 }
@@ -68,8 +68,8 @@ function datamachine_recipes_activate() {
     if ( ! is_plugin_active( 'datamachine/datamachine.php' ) ) {
         deactivate_plugins( plugin_basename( __FILE__ ) );
         wp_die(
-            __( 'Data Machine Recipes requires the Data Machine plugin to be installed and activated.', 'data-machine-recipes' ),
-            __( 'Plugin Dependency Error', 'data-machine-recipes' ),
+            __( 'Data Machine Recipes requires the Data Machine plugin to be installed and activated.', 'datamachine-recipes' ),
+            __( 'Plugin Dependency Error', 'datamachine-recipes' ),
             array( 'back_link' => true )
         );
     }

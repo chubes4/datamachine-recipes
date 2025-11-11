@@ -21,8 +21,8 @@ function datamachine_recipes_register_wordpress_recipe_publish_filters() {
         $handlers['wordpress_recipe_publish'] = [
             'type' => 'publish',
             'class' => WordPressRecipePublish::class,
-            'label' => __( 'WordPress Recipe', 'data-machine-recipes' ),
-            'description' => __( 'Publish recipes to WordPress with Schema.org structured data markup', 'data-machine-recipes' )
+            'label' => __( 'WordPress Recipe', 'datamachine-recipes' ),
+            'description' => __( 'Publish recipes to WordPress with Schema.org structured data markup', 'datamachine-recipes' )
         ];
         return $handlers;
     } );
