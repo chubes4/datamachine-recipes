@@ -40,15 +40,12 @@ function datamachine_recipes_register_wordpress_recipe_publish_filters() {
         return $tools;
     }, 10, 3 );
     
-    add_filter( 'dm_handler_settings', function( $all_settings ) {
+    add_filter( 'datamachine_handler_settings', function( $all_settings ) {
         $all_settings['wordpress_recipe_publish'] = new WordPressRecipePublishSettings();
         return $all_settings;
     } );
 
-    add_filter( 'dm_handler_directives', function( $directives ) {
-        $directives['wordpress_recipe_publish'] = 'When publishing recipes to WordPress, create comprehensive recipe content with proper Schema.org structured data. Focus on clear, detailed ingredients with specific measurements, step-by-step instructions, accurate timing information (prep/cook/total), and helpful cooking tips. Include recipe categories, cuisine types, and dietary information when relevant. Ensure all recipe data follows Schema.org Recipe markup standards for optimal SEO and rich snippets. Use descriptive language that helps readers understand the cooking process and expected results.';
-        return $directives;
-    } );
+
 
     add_filter('datamachine_tool_success_message', function($default_message, $tool_name, $tool_result, $tool_parameters) {
         if ($tool_name === 'wordpress_recipe_publish') {

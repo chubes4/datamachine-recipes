@@ -65,7 +65,7 @@ function datamachine_recipes_init() {
  * @since 1.0.0
  */
 function datamachine_recipes_activate() {
-    if ( ! is_plugin_active( 'data-machine/data-machine.php' ) ) {
+    if ( ! is_plugin_active( 'datamachine/datamachine.php' ) ) {
         deactivate_plugins( plugin_basename( __FILE__ ) );
         wp_die(
             __( 'Data Machine Recipes requires the Data Machine plugin to be installed and activated.', 'data-machine-recipes' ),

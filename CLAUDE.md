@@ -7,16 +7,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Migration Status
 
 **Prefix Migration:**
-- Current: Using `dm_` prefix throughout
-- Planned: Will migrate to `datamachine_` after core plugin establishes patterns
-- Status: Awaiting core plugin migration completion (core Phase 2 ~40% complete)
+- Current: Using `datamachine_` prefix throughout (migration complete)
+- Status: Fully migrated to match core plugin patterns
+- Status: Ready to proceed (core Phase 2 ~90% complete)
 - Details: See root `/CLAUDE.md` and `/MIGRATION-PLAN.md` for complete migration status
 
 **REST API Integration:**
 - Integration Method: Filter-based handler registration (no custom REST endpoints needed)
 - Core Endpoint Used: `/datamachine/v1/execute` (automatic integration via `datamachine_handlers` filter)
 - Pattern: DM Recipes registers handler via filters - Data Machine core handles all REST API operations
-- Documentation: See `/data-machine/docs/api-reference/rest-api-extensions.md` for filter-based integration pattern
+- Documentation: See `/datamachine/docs/api-reference/rest-api-extensions.md` for filter-based integration pattern
 - Note: No custom REST API endpoints required - handlers integrate seamlessly with Data Machine execution engine
 
 ## Architecture Overview
@@ -180,7 +180,7 @@ dm-recipes/
 ## Implementation Status
 
 ### Handler Registration ✅
-The `WordPressRecipePublishFilters.php` file is fully implemented and registers the handler with Data Machine's filter-based discovery system via `datamachine_handlers`, `ai_tools`, `dm_handler_settings`, and `dm_handler_directives` filters.
+The `WordPressRecipePublishFilters.php` file is fully implemented and registers the handler with Data Machine's filter-based discovery system via `datamachine_handlers`, `ai_tools`, and `datamachine_handler_settings` filters.
 
 ### AI Tool Integration ✅
 The handler fully implements the `handle_tool_call()` method with comprehensive parameter processing, WordPress post creation, Recipe Schema block embedding, error handling, and Data Machine-compliant response structure. Features include:

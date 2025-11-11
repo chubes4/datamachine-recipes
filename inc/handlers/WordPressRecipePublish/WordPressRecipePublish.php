@@ -154,7 +154,7 @@ class WordPressRecipePublish {
         }
         
         $author_id = $handler_config['post_author'];
-        $author_name = apply_filters( 'dm_wordpress_user_display_name', null, $author_id );
+        $author_name = apply_filters( 'datamachine_wordpress_user_display_name', null, $author_id );
         if ( $author_name ) {
             $recipe_data['author'] = [
                 'name' => sanitize_text_field( $author_name ),

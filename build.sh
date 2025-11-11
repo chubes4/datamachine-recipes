@@ -5,8 +5,8 @@
 set -e  # Exit on any error
 
 # Plugin information
-PLUGIN_NAME="data-machine-recipes"
-PLUGIN_VERSION=$(grep "Version:" data-machine-recipes.php | sed 's/.*Version: *\([0-9.]*\).*/\1/')
+PLUGIN_NAME="datamachine-recipes"
+PLUGIN_VERSION=$(grep "Version:" datamachine-recipes.php | sed 's/.*Version: *\([0-9.]*\).*/\1/')
 BUILD_DIR="dist"
 ZIP_NAME="${PLUGIN_NAME}-${PLUGIN_VERSION}.zip"
 
@@ -53,7 +53,7 @@ rsync -av \
 # Validate essential files exist
 echo "✅ Validating build..."
 REQUIRED_FILES=(
-    "data-machine-recipes.php"
+    "datamachine-recipes.php"
     "inc/handlers/WordPressRecipePublish/WordPressRecipePublish.php"
     "inc/handlers/WordPressRecipePublish/WordPressRecipePublishFilters.php"
     "inc/blocks/recipe-schema/recipe-schema.php"
