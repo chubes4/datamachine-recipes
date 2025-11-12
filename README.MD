@@ -15,7 +15,7 @@ A WordPress plugin that extends Data Machine with comprehensive recipe publishin
 
 - WordPress 5.0+
 - PHP 7.4+
-- [Data Machine](https://github.com/chubes4/data-machine) plugin
+- [Data Machine](https://github.com/chubes4/datamachine) plugin
 - Composer (for development)
 
 ## Installation
@@ -29,8 +29,8 @@ A WordPress plugin that extends Data Machine with comprehensive recipe publishin
 ### Development Installation
 ```bash
 # Clone the repository
-git clone https://github.com/chubes4/dm-recipes.git
-cd dm-recipes
+git clone https://github.com/chubes4/datamachine-recipes.git
+cd datamachine-recipes
 
 # Install PHP dependencies
 composer install
@@ -133,8 +133,8 @@ Self-registering via WordPress filters:
 
 ### File Structure
 ```
-dm-recipes/
-├── dm-recipes.php                       # Main plugin file with autoloader
+datamachine-recipes/
+├── datamachine-recipes.php                       # Main plugin file with autoloader
 ├── build.sh                             # Dual-system production build script
 ├── composer.json                        # PHP dependencies, autoloading, linting scripts
 ├── package.json                         # npm dependencies and wp-scripts configuration

@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @since 1.0.0
  */
 function datamachine_recipes_register_recipe_schema_block() {
-    register_block_type( DATA_MACHINE_RECIPES_PLUGIN_DIR . 'build/recipe-schema', array(
+    register_block_type( DATAMACHINE_RECIPES_PLUGIN_DIR . 'build/recipe-schema', array(
         'render_callback' => 'datamachine_recipes_render_recipe_schema_block',
     ) );
 }

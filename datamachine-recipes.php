@@ -1,14 +1,14 @@
 <?php
 /**
  * Plugin Name: Data Machine Recipes
- * Plugin URI: https://github.com/chubes4/data-machine-recipes
+ * Plugin URI: https://github.com/chubes4/datamachine-recipes
  * Description: Extends Data Machine to publish recipes with Schema.org structured data via WordPress Recipe Publish Handler and Recipe Schema Gutenberg Block.
  * Version: 1.0.0
  * Author: Chris Huber
  * Author URI: https://chubes.net
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: data-machine-recipes
+ * Text Domain: datamachine-recipes
  * Domain Path: /languages
  * Requires PHP: 7.4
  * Requires at least: 5.0

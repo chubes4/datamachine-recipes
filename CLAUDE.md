@@ -47,8 +47,8 @@ add_filter('datamachine_handlers', function($handlers) {
     $handlers['wordpress_recipe_publish'] = [
         'type' => 'publish',
         'class' => WordPressRecipePublish::class,
-        'label' => __('WordPress Recipe', 'dm-recipes'),
-        'description' => __('Publish recipes with Schema.org markup', 'dm-recipes')
+        'label' => __('WordPress Recipe', 'datamachine-recipes'),
+        'description' => __('Publish recipes with Schema.org markup', 'datamachine-recipes')
     ];
     return $handlers;
 });
@@ -149,8 +149,8 @@ composer lint:fix:php                    # Auto-fix with WordPress standards
 ## File Structure
 
 ```
-dm-recipes/
-├── dm-recipes.php                       # Main plugin file
+datamachine-recipes/
+├── datamachine-recipes.php                       # Main plugin file
 ├── build.sh                             # Production build script with dual-system support
 ├── composer.json                        # PHP dependencies and autoloading
 ├── package.json                         # npm dependencies and wp-scripts
