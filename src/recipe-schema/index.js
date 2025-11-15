@@ -216,7 +216,7 @@ const TagInput = ({ label, tags, onChange }) => {
  * Provides organized field groups (Basic Info, Timing, Categories, Nutrition, etc.)
  * and uses server-side rendering for Schema.org markup generation.
  */
-registerBlockType('data-machine-recipes/recipe-schema', {
+registerBlockType('datamachine-recipes/recipe-schema', {
     title: __('Recipe Schema', 'datamachine-recipes'),
     icon: 'food',
     category: 'common',

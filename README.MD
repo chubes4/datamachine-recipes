@@ -134,13 +134,13 @@ Self-registering via WordPress filters:
 ### File Structure
 ```
 datamachine-recipes/
-├── datamachine-recipes.php                       # Main plugin file with autoloader
+├── datamachine-recipes.php              # Main plugin file with autoloader
 ├── build.sh                             # Dual-system production build script
 ├── composer.json                        # PHP dependencies, autoloading, linting scripts
 ├── package.json                         # npm dependencies and wp-scripts configuration
 ├── src/                                 # Frontend source files
 │   └── recipe-schema/                   # React components and block source
-│       ├── index.js                     # Sophisticated React editor interface
+│       ├── index.js                     # React editor (registers datamachine-recipes/recipe-schema)
 │       ├── block.json                   # Block definition with Schema.org attributes
 │       └── style.scss                   # Block styling
 ├── build/                               # Compiled frontend assets (auto-generated)

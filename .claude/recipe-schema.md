@@ -1,10 +1,10 @@
 # Schema.org Recipe Implementation
 
-This document outlines the Schema.org Recipe properties implemented in the DM-Recipes plugin, specifically for the `dm-recipes/recipe-schema` Gutenberg block.
+This document outlines the Schema.org Recipe properties implemented in the DM-Recipes plugin, specifically for the `datamachine-recipes/recipe-schema` Gutenberg block.
 
 ## Block Name
-- **Registered Name**: `dm-recipes/recipe-schema`
-- **Text Domain**: `dm-recipes`
+- **Registered Name**: `datamachine-recipes/recipe-schema`
+- **Text Domain**: `datamachine-recipes`
 
 ## Core Recipe Properties
 
@@ -101,15 +101,15 @@ The block renders hidden semantic HTML with comprehensive microdata attributes:
 ### Duration Formatting
 - Converts ISO 8601 duration format (PT30M) to human-readable format (30 minutes)
 - Handles hours and minutes combinations with proper pluralization
-- Supports proper internationalization through `dm-recipes` text domain
-- Function: `dm_recipes_format_duration()` handles ISO 8601 parsing and formatting
+- Supports proper internationalization through `datamachine-recipes` text domain
+- Function: `datamachine_recipes_format_duration()` handles ISO 8601 parsing and formatting
 
 ### Block Registration
-- **Registration Function**: `dm_recipes_register_recipe_schema_block()` registers block on WordPress `init` hook
-- **Server-side Rendering**: `dm_recipes_render_recipe_schema_block()` handles both microdata and JSON-LD output
-- **JSON-LD Generation**: `dm_recipes_generate_recipe_jsonld()` creates complete Schema.org Recipe structured data
+- **Registration Function**: `datamachine_recipes_register_recipe_schema_block()` registers block on WordPress `init` hook
+- **Server-side Rendering**: `datamachine_recipes_render_recipe_schema_block()` handles both microdata and JSON-LD output
+- **JSON-LD Generation**: `datamachine_recipes_generate_recipe_jsonld()` creates complete Schema.org Recipe structured data
 - **Hidden Output**: Block content is hidden from frontend display (style="display: none;") as it only provides structured data
 - **Build Integration**: Uses compiled block definition from `/build/recipe-schema/` directory
 
 ## Text Domain Consistency
-All user-facing strings use the `dm-recipes` text domain for proper internationalization support.
+All user-facing strings use the `datamachine-recipes` text domain for proper internationalization support.

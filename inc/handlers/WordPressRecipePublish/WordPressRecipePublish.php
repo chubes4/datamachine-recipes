@@ -199,8 +199,8 @@ class WordPressRecipePublish {
             ];
         }
         
-        $block_html = '<!-- wp:data-machine-recipes/recipe-schema ' . $block_attributes . ' -->' . "\n" .
-                     '<!-- /wp:data-machine-recipes/recipe-schema -->';
+        $block_html = '<!-- wp:datamachine-recipes/recipe-schema ' . $block_attributes . ' -->' . "\n" .
+                     '<!-- /wp:datamachine-recipes/recipe-schema -->';
         
         return [
             'success' => true,

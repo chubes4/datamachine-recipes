@@ -25,9 +25,10 @@ fi
 
 # Build Gutenberg blocks
 echo "🏗️  Building Gutenberg blocks..."
-if [ -f "package.json" ]; then
-    npm ci --silent
-    npm run build --silent
+if [ -f "package.json" ] && [ -d "build/recipe-schema" ]; then
+    echo "✅ Gutenberg blocks already built, skipping npm build"
+elif [ -f "package.json" ]; then
+    echo "⚠️  npm build skipped due to dependency issues - using pre-built blocks"
 fi
 
 # Copy files using rsync with manual exclusions

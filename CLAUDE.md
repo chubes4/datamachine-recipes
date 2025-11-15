@@ -7,10 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Migration Status
 
 **Prefix Migration:**
-- Current: Using `datamachine_` prefix throughout (migration complete)
-- Status: Fully migrated to match core plugin patterns
-- Status: Ready to proceed (core Phase 2 ~90% complete)
-- Details: See root `/CLAUDE.md` and `/MIGRATION-PLAN.md` for complete migration status
+- Status: Complete - all `dm_` → `datamachine_` prefix conversions finished
+- Block name: `datamachine-recipes/recipe-schema`
+- Text domain: `datamachine-recipes`
+- Function prefixes: `datamachine_recipes_*`
+- Namespace: `DataMachineRecipes\`
 
 **REST API Integration:**
 - Integration Method: Filter-based handler registration (no custom REST endpoints needed)
@@ -93,8 +94,8 @@ public function handle_tool_call($parameters, $tool_def = []) {
 
 ## Schema.org Recipe Implementation
 
-### Block Attributes (from `/inc/blocks/recipe-schema/block.json`)
-The recipe block supports complete Schema.org Recipe markup including:
+### Block Attributes
+The `datamachine-recipes/recipe-schema` block supports complete Schema.org Recipe markup including:
 
 - **Basic Info**: `recipeName`, `description`, `images`, `author`
 - **Timing**: `prepTime`, `cookTime`, `totalTime` (ISO 8601 format)
@@ -150,13 +151,13 @@ composer lint:fix:php                    # Auto-fix with WordPress standards
 
 ```
 datamachine-recipes/
-├── datamachine-recipes.php                       # Main plugin file
+├── datamachine-recipes.php              # Main plugin file
 ├── build.sh                             # Production build script with dual-system support
 ├── composer.json                        # PHP dependencies and autoloading
 ├── package.json                         # npm dependencies and wp-scripts
 ├── src/                                 # Frontend source files
 │   └── recipe-schema/                   # React components and block source
-│       ├── index.js                     # React editor interface with UI components
+│       ├── index.js                     # React editor (registers datamachine-recipes/recipe-schema)
 │       ├── block.json                   # Block definition and attributes
 │       └── style.scss                   # Block styling
 ├── build/                               # Compiled frontend assets (generated)
@@ -189,8 +190,9 @@ The handler fully implements the `handle_tool_call()` method with comprehensive 
 - **Enhanced Error Handling**: Detailed validation and error reporting for AI agents
 - **Data Machine Compliance**: Structured return format with nested `data` object and `tool_name` field
 
-### Gutenberg Block Implementation ✅ 
-Recipe Schema block features sophisticated React-based editor interface with comprehensive Schema.org support:
+### Gutenberg Block Implementation ✅
+Recipe Schema block (`datamachine-recipes/recipe-schema`) features sophisticated React-based editor interface with comprehensive Schema.org support:
+- **Block Registration**: Registered as `datamachine-recipes/recipe-schema` in JavaScript and PHP
 - **React Components**: Custom `DurationInput`, `ArrayInput`, and `TagInput` components for advanced UI interactions
 - **Comprehensive Form Interface**: Categorized sections for basic info, timing, categories, ingredients, instructions, nutrition, and additional metadata
 - **Real-time Validation**: ISO 8601 duration parsing/formatting and interactive array management
