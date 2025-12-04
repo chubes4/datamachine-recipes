@@ -1,5 +1,11 @@
 <?php
-namespace DataMachineRecipes\WordPressRecipePublish;
+namespace DataMachineRecipes\Handlers\WordPressRecipePublish;
+
+use DataMachine\Core\Steps\Publish\Handlers\PublishHandler;
+use DataMachine\Core\Steps\HandlerRegistrationTrait;
+use DataMachine\Core\WordPress\WordPressSettingsResolver;
+use DataMachine\Core\WordPress\TaxonomyHandler;
+use DataMachine\Core\WordPress\WordPressPublishHelper;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -13,108 +19,275 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package DataMachineRecipes\WordPressRecipePublish
  * @since 1.0.0
  */
-class WordPressRecipePublish {
+class WordPressRecipePublish extends PublishHandler {
+    use HandlerRegistrationTrait;
+
+    protected $taxonomy_handler;
+
+    public function __construct() {
+        parent::__construct('wordpress_recipe_publish');
+        $this->taxonomy_handler = new TaxonomyHandler();
+    }
 
     /**
-     * Handle AI tool execution for recipe publishing.
+     * Register the handler.
+     */
+    public static function register(): void {
+        self::registerHandler(
+            'wordpress_recipe_publish',
+            'publish',
+            self::class,
+            __('WordPress Recipe', 'datamachine-recipes'),
+            __('Publish recipes to WordPress with Schema.org structured data', 'datamachine-recipes'),
+            false,
+            null,
+            WordPressRecipePublishSettings::class,
+            function($tools, $handler_slug, $handler_config) {
+                if ($handler_slug === 'wordpress_recipe_publish') {
+                    $base_params = self::get_recipe_parameters();
+                    $taxonomy_params = TaxonomyHandler::getTaxonomyToolParameters($handler_config);
+                    
+                    $tools['wordpress_recipe_publish'] = [
+                        'class' => self::class,
+                        'method' => 'handle_tool_call',
+                        'handler' => 'wordpress_recipe_publish',
+                        'description' => 'Create WordPress recipe posts with Schema.org structured data markup for SEO-optimized recipe content including ingredients, instructions, timing, and nutrition.',
+                        'parameters' => array_merge($base_params, $taxonomy_params),
+                        'handler_config' => $handler_config
+                    ];
+                }
+                return $tools;
+            }
+        );
+    }
+
+    /**
+     * Execute recipe publishing.
      *
-     * @param array $parameters AI tool parameters with recipe data and post content
-     * @param array $tool_def Tool definition with handler configuration
-     * @return array Success/failure response with data object and tool_name
+     * @param array $parameters AI tool parameters
+     * @param array $handler_config Handler configuration
+     * @return array Success/failure response
      * @since 1.0.0
      */
-    public function handle_tool_call( array $parameters, array $tool_def = [] ): array {
+    protected function executePublish(array $parameters, array $handler_config): array {
+        // Parent PublishHandler ensures job_id and engine are present
+        $job_id = $parameters['job_id'];
+        $engine = $parameters['engine'];
+
         if ( empty( $parameters['post_title'] ) ) {
-            return [
-                'success' => false,
-                'error' => 'Recipe title is required'
-            ];
+            return $this->errorResponse('Recipe title is required');
         }
 
-        if ( empty( $tool_def['handler_config'] ) ) {
-            return [
-                'success' => false,
-                'error' => 'Missing handler_config in tool definition'
-            ];
-        }
-        
-        $handler_config = $tool_def['handler_config']['wordpress_recipe_publish'] ?? $tool_def['handler_config'];
-        
         if ( empty( $handler_config ) ) {
-            return [
-                'success' => false,
-                'error' => 'Empty handler configuration for wordpress_recipe_publish'
-            ];
+            return $this->errorResponse('Empty handler configuration for wordpress_recipe_publish');
         }
-        
-        if ( empty( $handler_config['post_type'] ) ) {
-            return [
-                'success' => false,
-                'error' => 'Missing required post_type in handler configuration'
-            ];
+
+        $post_status = WordPressSettingsResolver::getPostStatus($handler_config);
+        $post_author = WordPressSettingsResolver::getPostAuthor($handler_config);
+        $post_type = $handler_config['post_type'] ?? 'post';
+
+        if ( empty( $post_type ) ) {
+            return $this->errorResponse('Missing required post_type in handler configuration');
         }
-        
-        if ( empty( $handler_config['post_status'] ) ) {
-            return [
-                'success' => false,
-                'error' => 'Missing required post_status in handler configuration'
-            ];
+
+        if ( empty( $post_status ) ) {
+            return $this->errorResponse('Missing required post_status in handler configuration');
         }
-        
-        if ( empty( $handler_config['post_author'] ) ) {
-            return [
-                'success' => false,
-                'error' => 'Missing required post_author in handler configuration'
-            ];
+
+        if ( empty( $post_author ) ) {
+            return $this->errorResponse('Missing required post_author in handler configuration');
         }
-        
+
         $handler_config = apply_filters('datamachine_apply_global_defaults', $handler_config, 'wordpress_recipe_publish', 'publish');
 
         $recipe_block_result = $this->create_recipe_schema_block( $parameters, $handler_config );
-        
+
         if ( ! $recipe_block_result['success'] ) {
-            return [
-                'success' => false,
-                'error' => 'Failed to create recipe block: ' . $recipe_block_result['error']
-            ];
+            return $this->errorResponse('Failed to create recipe block: ' . $recipe_block_result['error']);
         }
 
-        $content = wp_kses_post( wp_unslash( $parameters['post_content'] ?? '' ) );
+        $content = wp_unslash( $parameters['post_content'] ?? '' );
+        
+        // Apply source attribution using core helper
+        $content = WordPressPublishHelper::applySourceAttribution($content, $engine->getSourceUrl(), $handler_config);
+        
+        // Append recipe block
         $content .= "\n\n" . $recipe_block_result['block'];
+        
+        // Filter content for security
+        $content = wp_filter_post_kses( $content );
 
         $post_data = [
             'post_title' => sanitize_text_field( $parameters['post_title'] ),
             'post_content' => $content,
-            'post_status' => $handler_config['post_status'],
-            'post_author' => $handler_config['post_author'],
-            'post_type' => $handler_config['post_type']
+            'post_status' => $post_status,
+            'post_author' => $post_author,
+            'post_type' => $post_type
         ];
 
         $post_id = wp_insert_post( $post_data );
 
         if ( is_wp_error( $post_id ) || ! $post_id ) {
-            return [
-                'success' => false,
-                'error' => 'Failed to create post: ' . ( is_wp_error( $post_id ) ? $post_id->get_error_message() : 'Invalid post ID' )
-            ];
+            $error_msg = 'Failed to create post: ' . ( is_wp_error( $post_id ) ? $post_id->get_error_message() : 'Invalid post ID' );
+            return $this->errorResponse($error_msg);
         }
-        
-        $taxonomy_results = $this->process_taxonomies_from_settings( $post_id, $parameters, $handler_config );
-        
 
-        return [
-            'success' => true,
-            'data' => [
-                'post_id' => $post_id,
-                'post_title' => $parameters['post_title'],
-                'post_url' => get_permalink( $post_id ),
-                'edit_url' => get_edit_post_link( $post_id, 'raw' ),
-                'taxonomy_results' => $taxonomy_results
-            ],
-            'tool_name' => 'wordpress_recipe_publish'
-        ];
+        // Attach featured image if available and configured
+        WordPressPublishHelper::attachImageToPost($post_id, $engine->getImagePath(), $handler_config);
+
+        // Use shared taxonomy processing for standard public taxonomies.
+        $taxonomy_results = $this->taxonomy_handler->processTaxonomies( $post_id, $parameters, $handler_config, $engine->all() );
+
+        // Store post_id in engine data for downstream handlers
+        apply_filters('datamachine_engine_data', null, $job_id, [
+            'post_id' => $post_id,
+            'published_url' => get_permalink($post_id)
+        ]);
+
+        return $this->successResponse([
+            'post_id' => $post_id,
+            'post_title' => $parameters['post_title'],
+            'post_url' => get_permalink( $post_id ),
+            'edit_url' => get_edit_post_link( $post_id, 'raw' ),
+            'taxonomy_results' => $taxonomy_results
+        ]);
     }
     
+    /**
+     * Get base recipe parameters.
+     *
+     * @return array
+     */
+    private static function get_recipe_parameters(): array {
+        return [
+            'post_title' => [
+                'type' => 'string',
+                'required' => true,
+                'description' => 'The title of the blog post'
+            ],
+            'post_content' => [
+                'type' => 'string',
+                'required' => true,
+                'description' => 'Recipe article content formatted as WordPress Gutenberg blocks. Use <!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph --> for paragraphs.
+
+HEADINGS - Use proper heading hierarchy for recipe sections:
+• H2: <!-- wp:heading --><h2 class="wp-block-heading">Ingredients</h2><!-- /wp:heading -->
+• H3: <!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Instructions</h3><!-- /wp:heading -->
+• H4: <!-- wp:heading {"level":4} --><h4 class="wp-block-heading">Tips & Notes</h4><!-- /wp:heading -->
+
+LISTS - Use correct block syntax:
+• Unordered lists: <!-- wp:list --><ul class="wp-block-list"><li>Item 1</li><li>Item 2</li></ul><!-- /wp:list -->
+• Ordered lists (recipe steps): <!-- wp:list {"ordered":true} --><ol class="wp-block-list"><li>Step 1</li><li>Step 2</li></ol><!-- /wp:list -->
+
+Use ordered lists for recipe instructions and cooking steps to ensure proper formatting and semantic HTML.'
+            ],
+            'recipeName' => [
+                'type' => 'string',
+                'required' => true,
+                'description' => 'The name of the recipe'
+            ],
+            'description' => [
+                'type' => 'string',
+                'description' => 'A description of the recipe'
+            ],
+            'prepTime' => [
+                'type' => 'string',
+                'description' => 'Preparation time in ISO 8601 format (e.g., PT30M for 30 minutes)'
+            ],
+            'cookTime' => [
+                'type' => 'string',
+                'description' => 'Cooking time in ISO 8601 format (e.g., PT1H for 1 hour)'
+            ],
+            'totalTime' => [
+                'type' => 'string',
+                'description' => 'Total time in ISO 8601 format (prep + cook time)'
+            ],
+            'recipeYield' => [
+                'type' => 'string',
+                'description' => 'Number of servings or yield (e.g., "4 servings", "12 muffins")'
+            ],
+            'recipeCategory' => [
+                'type' => 'array',
+                'items' => ['type' => 'string'],
+                'description' => 'Recipe categories (e.g., ["appetizer", "main course", "dessert"])'
+            ],
+            'recipeCuisine' => [
+                'type' => 'string',
+                'description' => 'The cuisine type (e.g., "Italian", "Mexican", "American")'
+            ],
+            'cookingMethod' => [
+                'type' => 'string',
+                'description' => 'Cooking method (e.g., "baking", "grilling", "frying")'
+            ],
+            'recipeIngredient' => [
+                'type' => 'array',
+                'items' => ['type' => 'string'],
+                'description' => 'List of ingredients with quantities (e.g., ["2 cups flour", "1 tsp salt"])'
+            ],
+            'recipeInstructions' => [
+                'type' => 'array',
+                'items' => ['type' => 'string'],
+                'description' => 'Step-by-step cooking instructions'
+            ],
+            'keywords' => [
+                'type' => 'array',
+                'items' => ['type' => 'string'],
+                'description' => 'Keywords or tags for the recipe'
+            ],
+            'suitableForDiet' => [
+                'type' => 'array',
+                'items' => ['type' => 'string'],
+                'description' => 'Dietary restrictions (e.g., ["vegetarian", "gluten-free", "low-carb"])'
+            ],
+            'nutrition' => [
+                'type' => 'object',
+                'properties' => [
+                    'calories' => ['type' => 'string', 'description' => 'Calories per serving'],
+                    'fatContent' => ['type' => 'string', 'description' => 'Fat content'],
+                    'carbohydrateContent' => ['type' => 'string', 'description' => 'Carbohydrate content'],
+                    'proteinContent' => ['type' => 'string', 'description' => 'Protein content'],
+                    'sodiumContent' => ['type' => 'string', 'description' => 'Sodium content'],
+                    'fiberContent' => ['type' => 'string', 'description' => 'Fiber content']
+                ],
+                'description' => 'Nutritional information for the recipe'
+            ],
+            'video' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => ['type' => 'string', 'description' => 'Video title'],
+                    'description' => ['type' => 'string', 'description' => 'Video description'],
+                    'contentUrl' => ['type' => 'string', 'description' => 'Video URL'],
+                    'thumbnailUrl' => ['type' => 'string', 'description' => 'Video thumbnail URL'],
+                    'duration' => ['type' => 'string', 'description' => 'Video duration in ISO 8601 format']
+                ],
+                'description' => 'Recipe video information'
+            ],
+            'tool' => [
+                'type' => 'array',
+                'items' => ['type' => 'string'],
+                'description' => 'Cooking tools or equipment needed'
+            ],
+            'supply' => [
+                'type' => 'array',
+                'items' => ['type' => 'string'],
+                'description' => 'Supplies consumed during cooking (beyond ingredients)'
+            ],
+            'estimatedCost' => [
+                'type' => 'string',
+                'description' => 'Estimated cost to make the recipe'
+            ],
+            'datePublished' => [
+                'type' => 'string',
+                'description' => 'Publication date in ISO 8601 format (auto-generated if not provided)'
+            ],
+            'job_id' => [
+                'type' => 'string',
+                'required' => true,
+                'description' => 'Job ID for tracking workflow execution'
+            ]
+        ];
+    }
+
     /**
      * Create Recipe Schema Gutenberg block from AI parameters.
      *
@@ -215,113 +388,26 @@ class WordPressRecipePublish {
         return array_map( 'sanitize_text_field', array_filter( $input ) );
     }
     
-    private function process_taxonomies_from_settings(int $post_id, array $parameters, array $handler_config): array {
-        $taxonomy_results = [];
-        
-        $taxonomies = get_taxonomies(['public' => true], 'objects');
-        
-        foreach ($taxonomies as $taxonomy) {
-            $excluded = apply_filters('datamachine_wordpress_system_taxonomies', []);
-            if (in_array($taxonomy->name, $excluded)) {
-                continue;
-            }
+    // Taxonomy assignment is handled centrally by TaxonomyHandler via applyTaxonomies().
 
-            $field_key = "taxonomy_{$taxonomy->name}_selection";
-            
-            if ( ! isset( $handler_config[$field_key] ) ) {
-                $taxonomy_results[$taxonomy->name] = [
-                    'success' => false,
-                    'error' => "Missing taxonomy configuration: {$field_key}"
-                ];
-                continue;
-            }
-            
-            $selection = $handler_config[$field_key];
-            
-            if ($selection === 'skip') {
-                continue;
-                
-            } elseif ($selection === 'ai_decides') {
-                $param_name = $taxonomy->name === 'category' ? 'category' : 
-                             ($taxonomy->name === 'post_tag' ? 'tags' : $taxonomy->name);
-                
-                if (!empty($parameters[$param_name])) {
-                    $taxonomy_result = $this->assign_taxonomy($post_id, $taxonomy->name, $parameters[$param_name]);
-                    $taxonomy_results[$taxonomy->name] = $taxonomy_result;
-                }
-                
-            } elseif (is_numeric($selection)) {
-                $term_id = absint($selection);
-                $term = get_term($term_id, $taxonomy->name);
-                
-                if (!is_wp_error($term) && $term) {
-                    $result = wp_set_object_terms($post_id, [$term_id], $taxonomy->name);
-                    
-                    if (is_wp_error($result)) {
-                        $taxonomy_results[$taxonomy->name] = [
-                            'success' => false,
-                            'error' => $result->get_error_message()
-                        ];
-                    } else {
-                        $taxonomy_results[$taxonomy->name] = [
-                            'success' => true,
-                            'taxonomy' => $taxonomy->name,
-                            'term_count' => 1,
-                            'terms' => [$term->name]
-                        ];
-                    }
-                }
-            }
-        }
-        
-        return $taxonomy_results;
-    }
-    
-    private function assign_taxonomy(int $post_id, string $taxonomy_name, $taxonomy_value): array {
-        if (!taxonomy_exists($taxonomy_name)) {
-            return [
-                'success' => false,
-                'error' => "Taxonomy '{$taxonomy_name}' does not exist"
-            ];
-        }
-        
-        $taxonomy_obj = get_taxonomy($taxonomy_name);
-        $term_ids = [];
-        
-        $terms = is_array($taxonomy_value) ? $taxonomy_value : [$taxonomy_value];
-        
-        foreach ($terms as $term_name) {
-            $term_name = sanitize_text_field($term_name);
-            if (empty($term_name)) continue;
-            
-            $term = get_term_by('name', $term_name, $taxonomy_name);
-            if (!$term) {
-                $term_result = wp_insert_term($term_name, $taxonomy_name);
-                if (is_wp_error($term_result)) {
-                    continue;
-                }
-                $term_ids[] = $term_result['term_id'];
-            } else {
-                $term_ids[] = $term->term_id;
-            }
-        }
-        
-        if (!empty($term_ids)) {
-            $result = wp_set_object_terms($post_id, $term_ids, $taxonomy_name);
-            if (is_wp_error($result)) {
-                return [
-                    'success' => false,
-                    'error' => $result->get_error_message()
-                ];
-            }
-        }
-        
-        return [
-            'success' => true,
-            'taxonomy' => $taxonomy_name,
-            'term_count' => count($term_ids),
-            'terms' => $terms
-        ];
-    }
-    
+    /**
+     * Assign pre-selected taxonomy term.
+     *
+     * @param int $post_id Post ID
+     * @param string $taxonomy_name Taxonomy name
+     * @param int $term_id Term ID
+     * @return array|null Assignment result
+     */
+    // Direct term assignment is handled by TaxonomyHandler when handler_config indicates pre-selected terms.
+
+    /**
+     * Assign AI-decided taxonomy terms with dynamic term creation.
+     *
+     * @param int $post_id Post ID
+     * @param string $taxonomy_name Taxonomy name
+     * @param string|array $term_value Term value(s)
+     * @return array|null Assignment result
+     */
+    // AI-decided taxonomy assignment is now handled by the centralized TaxonomyHandler's assignTaxonomy.
+
 }

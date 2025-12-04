@@ -15,7 +15,7 @@ A WordPress plugin that extends Data Machine with comprehensive recipe publishin
 
 - WordPress 5.0+
 - PHP 7.4+
-- [Data Machine](https://github.com/chubes4/datamachine) plugin
+- [Data Machine](https://github.com/chubes4/datamachine) plugin v0.2.7+
 - Composer (for development)
 
 ## Installation
@@ -125,11 +125,11 @@ composer lint:fix:php                    # WordPress auto-fix
 
 ### Handler Registration
 Self-registering via WordPress filters:
-- `datamachine_handlers` - Handler discovery
-- `ai_tools` - AI tool registration with dynamic taxonomy parameters
-- `datamachine_handler_settings` - Configuration management
-- `datamachine_handler_directives` - AI model guidance for recipe content generation
-- `datamachine_tool_success_message` - Custom success message formatting for recipe publishing
+- `datamachine_handlers`: Handler discovery
+- `chubes_ai_tools`: AI tool registration with dynamic taxonomy parameters
+- `datamachine_handler_settings`: Configuration management
+- `datamachine_handler_directives`: AI model guidance for recipe content generation
+- `datamachine_tool_success_message`: Custom success message formatting for recipe publishing
 
 ### File Structure
 ```

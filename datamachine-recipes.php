@@ -25,19 +25,9 @@ define( 'DATAMACHINE_RECIPES_PLUGIN_FILE', __FILE__ );
 define( 'DATAMACHINE_RECIPES_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DATAMACHINE_RECIPES_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-spl_autoload_register( function( $class_name ) {
-    if ( strpos( $class_name, 'DataMachineRecipes\\' ) !== 0 ) {
-        return;
-    }
-
-    $relative_class = str_replace( 'DataMachineRecipes\\', '', $class_name );
-    $relative_class = str_replace( '\\', '/', $relative_class );
-    $file = DATAMACHINE_RECIPES_PLUGIN_DIR . 'inc/handlers/' . $relative_class . '.php';
-
-    if ( file_exists( $file ) ) {
-        require_once $file;
-    }
-} );
+if ( file_exists( DATAMACHINE_RECIPES_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+    require_once DATAMACHINE_RECIPES_PLUGIN_DIR . 'vendor/autoload.php';
+}
 
 /**
  * Initialize DM-Recipes plugin functionality.
@@ -49,10 +39,16 @@ spl_autoload_register( function( $class_name ) {
  */
 function datamachine_recipes_init() {
     load_plugin_textdomain( 'datamachine-recipes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-    require_once DATAMACHINE_RECIPES_PLUGIN_DIR . 'inc/handlers/WordPressRecipePublish/WordPressRecipePublishFilters.php';
-    require_once DATAMACHINE_RECIPES_PLUGIN_DIR . 'inc/blocks/recipe-schema/recipe-schema.php';
+    
+    // Register Recipe Schema Block
+    if ( class_exists( 'DataMachineRecipes\Blocks\RecipeSchemaBlock' ) ) {
+        DataMachineRecipes\Blocks\RecipeSchemaBlock::register();
+    }
 
-    datamachine_recipes_register_recipe_schema_block();
+    // Register handlers
+    if ( class_exists( 'DataMachineRecipes\Handlers\WordPressRecipePublish\WordPressRecipePublish' ) ) {
+        DataMachineRecipes\Handlers\WordPressRecipePublish\WordPressRecipePublish::register();
+    }
 }
 
 /**

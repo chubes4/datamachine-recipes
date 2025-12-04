@@ -6,19 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Migration Status
 
-**Prefix Migration:**
-- Status: Complete - all `dm_` → `datamachine_` prefix conversions finished
-- Block name: `datamachine-recipes/recipe-schema`
-- Text domain: `datamachine-recipes`
-- Function prefixes: `datamachine_recipes_*`
-- Namespace: `DataMachineRecipes\`
+**Prefix Migration**: ✅ Complete - `datamachine_recipes` namespace and prefixes
 
-**REST API Integration:**
-- Integration Method: Filter-based handler registration (no custom REST endpoints needed)
-- Core Endpoint Used: `/datamachine/v1/execute` (automatic integration via `datamachine_handlers` filter)
-- Pattern: DM Recipes registers handler via filters - Data Machine core handles all REST API operations
-- Documentation: See `/datamachine/docs/api-reference/rest-api-extensions.md` for filter-based integration pattern
-- Note: No custom REST API endpoints required - handlers integrate seamlessly with Data Machine execution engine
+**REST API Integration**: Filter-based handler registration via `datamachine_handlers` filter - no custom endpoints needed
+
+**Data Machine Compatibility**: ✅ Compatible with Data Machine v0.2.0+ Universal Engine architecture
 
 ## Architecture Overview
 
@@ -26,71 +18,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Core Components
 
-#### WordPress Recipe Publish Handler (`/inc/handlers/WordPressRecipePublish/`)
+#### WordPress Recipe Publish Handler (`/inc/Handlers/WordPressRecipePublish/`)
 - **Main Handler**: `WordPressRecipePublish.php` - AI tool execution and post creation
-- **Filter Registration**: `WordPressRecipePublishFilters.php` - Handler and AI tool discovery
 - **Settings Management**: `WordPressRecipePublishSettings.php` - Configuration handling
+- **Registration**: Uses `HandlerRegistrationTrait` for filter-based discovery
 
 #### Recipe Schema Gutenberg Block (Modern React Implementation)
 - **Source Files**: `/src/recipe-schema/` - React components and block definitions
 - **Compiled Assets**: `/build/recipe-schema/` - Production-ready JavaScript and JSON files
-- **Server Components**: `/inc/blocks/recipe-schema/` - PHP registration and rendering
+- **Server Components**: `/inc/Blocks/RecipeSchemaBlock.php` - PHP registration and rendering
 - **React Editor Interface**: Sophisticated UI with duration inputs, array managers, and tag components
 
 ## Integration with Data Machine
 
 ### Handler Registration Pattern
-All handlers self-register via WordPress filters in the `*Filters.php` files:
-
-```php
-// Register handler for discovery
-add_filter('datamachine_handlers', function($handlers) {
-    $handlers['wordpress_recipe_publish'] = [
-        'type' => 'publish',
-        'class' => WordPressRecipePublish::class,
-        'label' => __('WordPress Recipe', 'datamachine-recipes'),
-        'description' => __('Publish recipes with Schema.org markup', 'datamachine-recipes')
-    ];
-    return $handlers;
-});
-
-// Register AI tool for agent execution
-add_filter('ai_tools', function($tools, $handler_slug = null, $handler_config = []) {
-    if ($handler_slug === 'wordpress_recipe_publish') {
-        $tools['wordpress_recipe_publish'] = [
-            'class' => WordPressRecipePublish::class,
-            'method' => 'handle_tool_call',
-            'handler' => 'wordpress_recipe_publish',
-            'description' => 'Create WordPress post with recipe schema block',
-            'parameters' => [/* Schema.org Recipe parameters */]
-        ];
-    }
-    return $tools;
-}, 10, 3);
-```
-
-### AI Tool Implementation
-The handler implements `handle_tool_call(array $parameters, array $tool_def = []): array` for AI agent execution:
-
-```php
-public function handle_tool_call($parameters, $tool_def = []) {
-    // 1. Create WordPress post with provided content
-    // 2. Add Recipe Schema block with structured data
-    // 3. Return Data Machine-compliant response structure for AI agent
-
-    return [
-        'success' => true,
-        'data' => [
-            'post_id' => $post_id,
-            'post_title' => $parameters['post_title'],
-            'post_url' => get_permalink($post_id),
-            'edit_url' => get_edit_post_link($post_id, 'raw'),
-            'taxonomy_results' => $taxonomy_results
-        ],
-        'tool_name' => 'wordpress_recipe_publish'
-    ];
-}
-```
+Handlers self-register via `datamachine_handlers` and `chubes_ai_tools` filters using `HandlerRegistrationTrait` in `WordPressRecipePublish.php`. See ecosystem root CLAUDE.md file for standard pattern documentation.
 
 ## Schema.org Recipe Implementation
 
@@ -181,7 +123,7 @@ datamachine-recipes/
 ## Implementation Status
 
 ### Handler Registration ✅
-The `WordPressRecipePublishFilters.php` file is fully implemented and registers the handler with Data Machine's filter-based discovery system via `datamachine_handlers`, `ai_tools`, and `datamachine_handler_settings` filters.
+The `WordPressRecipePublishFilters.php` file is fully implemented and registers the handler with Data Machine's filter-based discovery system via `datamachine_handlers`, `chubes_ai_tools`, and `datamachine_handler_settings` filters.
 
 ### AI Tool Integration ✅
 The handler fully implements the `handle_tool_call()` method with comprehensive parameter processing, WordPress post creation, Recipe Schema block embedding, error handling, and Data Machine-compliant response structure. Features include:
