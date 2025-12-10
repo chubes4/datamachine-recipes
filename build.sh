@@ -47,7 +47,7 @@ rsync -av \
     --exclude='webpack.config.js' \
     --exclude='.DS_Store' \
     --exclude='.claude/' \
-    --exclude='CLAUDE.md' \
+    --exclude='AGENTS.md' \
     --exclude='README.MD' \
     ./ ${BUILD_DIR}/${PLUGIN_NAME}/
 

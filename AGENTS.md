@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **REST API Integration**: Filter-based handler registration via `datamachine_handlers` filter - no custom endpoints needed
 
-**Data Machine Compatibility**: ✅ Compatible with Data Machine v0.2.0+ Universal Engine architecture
+**Data Machine Compatibility**: ✅ Compatible with Data Machine v0.5.8+ (requires Universal Engine architecture)
 
 ## Architecture Overview
 
@@ -32,7 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Integration with Data Machine
 
 ### Handler Registration Pattern
-Handlers self-register via `datamachine_handlers` and `chubes_ai_tools` filters using `HandlerRegistrationTrait` in `WordPressRecipePublish.php`. See ecosystem root CLAUDE.md file for standard pattern documentation.
+Handlers self-register via `datamachine_handlers` and `chubes_ai_tools` filters using `HandlerRegistrationTrait` in `WordPressRecipePublish.php`. See ecosystem root AGENTS.md file for standard pattern documentation.
 
 ## Schema.org Recipe Implementation
 
