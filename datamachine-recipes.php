@@ -3,15 +3,16 @@
  * Plugin Name: Data Machine Recipes
  * Plugin URI: https://github.com/chubes4/datamachine-recipes
  * Description: Extends Data Machine to publish recipes with Schema.org structured data via WordPress Recipe Publish Handler and Recipe Schema Gutenberg Block.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Chris Huber
  * Author URI: https://chubes.net
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: datamachine-recipes
  * Domain Path: /languages
- * Requires PHP: 7.4
- * Requires at least: 5.0
+ * Requires PHP: 8.2
+ * Requires at least: 6.2
+ * Requires Plugins: data-machine
  * Network: false
  *
  * @package DataMachineRecipes
@@ -20,7 +21,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-define( 'DATAMACHINE_RECIPES_VERSION', '1.0.0' );
+define( 'DATAMACHINE_RECIPES_VERSION', '1.1.0' );
 define( 'DATAMACHINE_RECIPES_PLUGIN_FILE', __FILE__ );
 define( 'DATAMACHINE_RECIPES_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DATAMACHINE_RECIPES_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -54,21 +55,12 @@ function datamachine_recipes_init() {
 /**
  * Plugin activation callback.
  *
- * Validates Data Machine plugin dependency is active before allowing activation.
- * Deactivates self and displays error if dependency not met. Flushes rewrite
- * rules to ensure proper URL structure.
+ * Flushes rewrite rules to ensure proper URL structure.
+ * Plugin dependency handled by WordPress via Requires Plugins header.
  *
  * @since 1.0.0
  */
 function datamachine_recipes_activate() {
-    if ( ! is_plugin_active( 'datamachine/datamachine.php' ) ) {
-        deactivate_plugins( plugin_basename( __FILE__ ) );
-        wp_die(
-            __( 'Data Machine Recipes requires the Data Machine plugin to be installed and activated.', 'datamachine-recipes' ),
-            __( 'Plugin Dependency Error', 'datamachine-recipes' ),
-            array( 'back_link' => true )
-        );
-    }
     flush_rewrite_rules();
 }
 

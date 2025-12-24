@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **REST API Integration**: Filter-based handler registration via `datamachine_handlers` filter - no custom endpoints needed
 
-**Data Machine Compatibility**: ✅ Compatible with Data Machine v0.5.8+ (requires Universal Engine architecture)
+**Data Machine Compatibility**: ✅ Compatible with Data Machine v0.6.0+ (requires Universal Engine architecture)
 
 ## Architecture Overview
 
@@ -93,7 +93,7 @@ composer lint:fix:php                    # Auto-fix with WordPress standards
 
 ```
 datamachine-recipes/
-├── datamachine-recipes.php              # Main plugin file
+├── datamachine-recipes.php              # Main plugin file (uses Requires Plugins header)
 ├── build.sh                             # Production build script with dual-system support
 ├── composer.json                        # PHP dependencies and autoloading
 ├── package.json                         # npm dependencies and wp-scripts
@@ -104,18 +104,13 @@ datamachine-recipes/
 │       └── style.scss                   # Block styling
 ├── build/                               # Compiled frontend assets (generated)
 │   └── recipe-schema/                   # Production-ready JavaScript and assets
-│       ├── index.js                     # Compiled React editor
-│       ├── block.json                   # Processed block definition
-│       └── index.asset.php              # WordPress asset dependencies
 ├── inc/
-│   ├── handlers/WordPressRecipePublish/ # Data Machine handler implementation
-│   │   ├── WordPressRecipePublish.php   # Main handler class
-│   │   ├── WordPressRecipePublishFilters.php  # Filter registration
+│   ├── Handlers/WordPressRecipePublish/ # Data Machine handler implementation
+│   │   ├── WordPressRecipePublish.php   # Main handler class with HandlerRegistrationTrait
 │   │   └── WordPressRecipePublishSettings.php # Configuration
-│   └── blocks/recipe-schema/            # Server-side block registration
-│       ├── recipe-schema.php            # Block registration/rendering
-│       └── index.php                    # Block initialization
-├── README.MD                            # Plugin documentation
+│   └── blocks/
+│       └── RecipeSchemaBlock.php        # Server-side block registration and rendering
+├── README.md                            # Plugin documentation
 └── .claude/
     └── recipe-schema.md                 # Schema.org Recipe reference
 ```
@@ -123,7 +118,7 @@ datamachine-recipes/
 ## Implementation Status
 
 ### Handler Registration ✅
-The `WordPressRecipePublishFilters.php` file is fully implemented and registers the handler with Data Machine's filter-based discovery system via `datamachine_handlers`, `chubes_ai_tools`, and `datamachine_handler_settings` filters.
+The `WordPressRecipePublish.php` handler uses `HandlerRegistrationTrait` for self-registration with Data Machine's filter-based discovery system via `datamachine_handlers` and `chubes_ai_tools` filters.
 
 ### AI Tool Integration ✅
 The handler fully implements the `handle_tool_call()` method with comprehensive parameter processing, WordPress post creation, Recipe Schema block embedding, error handling, and Data Machine-compliant response structure. Features include:

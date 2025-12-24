@@ -1,6 +1,6 @@
 {
   "name": "datamachine-recipes",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Data Machine Recipes WordPress plugin with Schema.org Recipe Gutenberg block",
   "main": "index.js",
   "scripts": {

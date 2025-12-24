@@ -13,9 +13,9 @@ A WordPress plugin that extends Data Machine with comprehensive recipe publishin
 
 ## Requirements
 
-- WordPress 5.0+
-- PHP 7.4+
-- [Data Machine](https://github.com/chubes4/datamachine) plugin v0.5.8+
+- WordPress 6.2+
+- PHP 8.2+
+- [Data Machine](https://github.com/chubes4/datamachine) plugin v0.6.0+
 - Composer (for development)
 
 ## Installation
@@ -134,7 +134,7 @@ Self-registering via WordPress filters:
 ### File Structure
 ```
 datamachine-recipes/
-├── datamachine-recipes.php              # Main plugin file with autoloader
+├── datamachine-recipes.php              # Main plugin file (uses Requires Plugins header)
 ├── build.sh                             # Dual-system production build script
 ├── composer.json                        # PHP dependencies, autoloading, linting scripts
 ├── package.json                         # npm dependencies and wp-scripts configuration
@@ -149,13 +149,11 @@ datamachine-recipes/
 │       ├── block.json                   # Processed block definition
 │       └── index.asset.php              # WordPress asset dependencies
 ├── inc/
-│   ├── handlers/WordPressRecipePublish/ # Data Machine handler implementation
-│   │   ├── WordPressRecipePublish.php   # Main handler with AI tool call method
-│   │   ├── WordPressRecipePublishFilters.php  # Filter-based registration system
+│   ├── Handlers/WordPressRecipePublish/ # Data Machine handler implementation
+│   │   ├── WordPressRecipePublish.php   # Main handler class with HandlerRegistrationTrait
 │   │   └── WordPressRecipePublishSettings.php # Configuration management
-│   └── blocks/recipe-schema/            # Server-side block registration
-│       ├── recipe-schema.php            # Block rendering with microdata/JSON-LD
-│       └── index.php                    # Block initialization hooks
+│   └── blocks/
+│       └── RecipeSchemaBlock.php        # Server-side block registration and rendering
 └── .claude/
     └── recipe-schema.md                 # Schema.org implementation reference
 ```
