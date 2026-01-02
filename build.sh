@@ -55,9 +55,9 @@ rsync -av \
 echo "✅ Validating build..."
 REQUIRED_FILES=(
     "datamachine-recipes.php"
-    "inc/handlers/WordPressRecipePublish/WordPressRecipePublish.php"
-    "inc/handlers/WordPressRecipePublish/WordPressRecipePublishFilters.php"
-    "inc/blocks/recipe-schema/recipe-schema.php"
+    "inc/Handlers/WordPressRecipePublish/WordPressRecipePublish.php"
+    "inc/Handlers/WordPressRecipePublish/WordPressRecipePublishSettings.php"
+    "inc/blocks/RecipeSchemaBlock.php"
     "build/recipe-schema/block.json"
     "build/recipe-schema/index.js"
 )
