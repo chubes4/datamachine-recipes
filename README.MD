@@ -15,7 +15,7 @@ A WordPress plugin that extends Data Machine with comprehensive recipe publishin
 
 - WordPress 6.2+
 - PHP 8.2+
-- [Data Machine](https://github.com/chubes4/datamachine) plugin v0.6.0+
+- [Data Machine](https://github.com/chubes4/datamachine) plugin v0.8.0+
 - Composer (for development)
 
 ## Installation

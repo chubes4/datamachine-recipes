@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 
 ## Migration Status
 
@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **REST API Integration**: Filter-based handler registration via `datamachine_handlers` filter - no custom endpoints needed
 
-**Data Machine Compatibility**: ✅ Compatible with Data Machine v0.6.0+ (requires Universal Engine architecture)
+**Data Machine Compatibility**: ✅ Compatible with Data Machine v0.8.0+ (requires Universal Engine architecture)
 
 ## Architecture Overview
 
