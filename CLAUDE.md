@@ -1,4 +1,4 @@
-# AGENTS.md
+# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-**DM-Recipes** is a Data Machine extension plugin that adds recipe publishing capabilities with full Schema.org structured data support. It integrates with the Data Machine Pipeline+Flow system through a **filter-based discovery** architecture.
+**Data Machine Recipes** is a Data Machine extension plugin that adds recipe publishing capabilities with full Schema.org structured data support. It integrates with the Data Machine Pipeline+Flow system through a **filter-based discovery** architecture.
 
 ### Core Components
 
@@ -32,7 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Integration with Data Machine
 
 ### Handler Registration Pattern
-Handlers self-register via `datamachine_handlers` and `chubes_ai_tools` filters using `HandlerRegistrationTrait` in `WordPressRecipePublish.php`. See ecosystem root AGENTS.md file for standard pattern documentation.
+Handlers self-register via `datamachine_handlers` and `chubes_ai_tools` filters using `HandlerRegistrationTrait` in `WordPressRecipePublish.php`. See ecosystem root CLAUDE.md file for standard pattern documentation.
 
 ## Schema.org Recipe Implementation
 

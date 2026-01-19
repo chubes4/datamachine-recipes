@@ -1,6 +1,6 @@
 # Schema.org Recipe Implementation
 
-This document outlines the Schema.org Recipe properties implemented in the DM-Recipes plugin, specifically for the `datamachine-recipes/recipe-schema` Gutenberg block.
+This document outlines the Schema.org Recipe properties implemented in the Data Machine Recipes plugin, specifically for the `datamachine-recipes/recipe-schema` Gutenberg block.
 
 ## Block Name
 - **Registered Name**: `datamachine-recipes/recipe-schema`
